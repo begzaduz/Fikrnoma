@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 import {
+  ArrowLeft,
   Bookmark,
   Compass,
   Heart,
@@ -20,6 +21,7 @@ type Post = {
   time: string;
   title: string;
   excerpt: string;
+  content: string;
   author: string;
   initials: string;
   read: string;
@@ -35,6 +37,7 @@ const initialPosts: Post[] = [
     title: "Biz ko‘proq ma’lumotga egamiz. Ammo ko‘proq tushunyapmizmi?",
     excerpt:
       "Axborot ko‘paygani sari fikrlashga ehtiyoj kamaymaydi. Aksincha, eng muhim ko‘nikma — keraksiz shovqin ichidan ma’noni ajrata olish.",
+    content: "Bugun istalgan savolga bir necha soniyada javob topish mumkin. Ma’lumot olish hech qachon bunchalik oson bo‘lmagan. Ammo ma’lumotning ko‘pligi har doim ham tushunishning chuqurligini anglatmaydi.\n\nBiz ko‘pincha o‘qigan narsamizni anglagandek his qilamiz. Aslida esa fikrlarimizni shakllantirish uchun to‘xtash, savol berish va turli nuqtai nazarlarni solishtirish kerak.\n\nBalki bugungi eng muhim ko‘nikma ko‘proq ma’lumot yig‘ish emas, balki kerakli savolni bera olishdir.",
     author: "Muhammadali Karimov",
     initials: "MK",
     read: "4 daqiqa o‘qish",
@@ -48,6 +51,7 @@ const initialPosts: Post[] = [
     title: "Shaharlar odamlar uchun quriladimi yoki avtomobillar uchun?",
     excerpt:
       "Ko‘chalarimiz qanday ko‘rinishda bo‘lishi kerakligi — bu shunchaki arxitektura masalasi emas. Bu qanday hayot kechirishni tanlashimiz haqida.",
+    content: "Shahar ko‘chalariga qarab, u yerda kim uchun joy ajratilganini bilish mumkin. Keng yo‘llar, katta avtoturargohlar va piyodalar uchun tor yo‘laklar shahar qanday ustuvorliklar asosida qurilganini ko‘rsatadi.\n\nShahar faqat binolar va yo‘llardan iborat emas. U odamlar uchrashadigan, suhbatlashadigan, dam oladigan va kundalik hayotini kechiradigan makondir.\n\nShuning uchun shahar haqida gapirganda transport tezliginigina emas, insonning qulayligi va erkin harakatlanishini ham o‘ylashimiz kerak.",
     author: "Aziza Rahimova",
     initials: "AR",
     read: "6 daqiqa o‘qish",
@@ -58,6 +62,7 @@ const initialPosts: Post[] = [
 
 function App() {
   const [section, setSection] = useState<Section>("home");
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [posts, setPosts] = useState<Post[]>(initialPosts);
   const [saved, setSaved] = useState<number[]>([]);
   const [liked, setLiked] = useState<number[]>([]);
@@ -89,10 +94,11 @@ function App() {
       category: draftCategory,
       time: "Hozirgina",
       title,
-      excerpt: body,
+      excerpt: body.length > 180 ? body.slice(0, 177) + "..." : body,
+      content: body,
       author: "Siz",
       initials: "S",
-      read: `${Math.max(1, Math.ceil(body.split(/\\s+/).length / 180))} daqiqa o‘qish`,
+      read: `${Math.max(1, Math.ceil(body.split(/\s+/).length / 180))} daqiqa o‘qish`,
       likes: 0,
       comments: 0,
     };
@@ -142,7 +148,20 @@ function App() {
           </div>
         )}
 
-        {section === "home" && (
+        {selectedPost ? (
+          <article className="content-wrap article-view">
+            <button className="back-button" onClick={() => setSelectedPost(null)}><ArrowLeft size={16} /> Orqaga</button>
+            <div className="article-topline"><span>{selectedPost.category}</span><i />{selectedPost.time}</div>
+            <h1>{selectedPost.title}</h1>
+            <div className="article-byline"><span className="avatar">{selectedPost.initials}</span><strong>{selectedPost.author}</strong><span>·</span><span>{selectedPost.read}</span></div>
+            <div className="article-divider" />
+            <div className="article-content">{selectedPost.content.split(/\n\n+/).map((paragraph, index) => <p key={index}>{paragraph}</p>)}</div>
+            <div className="article-actions">
+              <button className={liked.includes(selectedPost.id) ? "action active" : "action"} onClick={() => toggleLiked(selectedPost.id)}><Heart size={18} /> {selectedPost.likes + (liked.includes(selectedPost.id) ? 1 : 0)} <span>Yoqdi</span></button>
+              <button className={saved.includes(selectedPost.id) ? "action active" : "action"} onClick={() => toggleSaved(selectedPost.id)}><Bookmark size={18} /> <span>{saved.includes(selectedPost.id) ? "Saqlandi" : "Saqlash"}</span></button>
+            </div>
+          </article>
+        ) : section === "home" && (
           <div className="content-wrap">
             <section className="intro">
               <p className="eyebrow">17-NOYABR, 2026 <span>—</span> BUGUNGI TANLOV</p>
@@ -162,8 +181,8 @@ function App() {
                     <div className="post-index">{String(index + 1).padStart(2, "0")}</div>
                     <div className="post-body">
                       <div className="post-meta"><span>{post.category}</span><i />{post.time}</div>
-                      <h3>{post.title}</h3>
-                      <p className="post-excerpt">{post.excerpt}</p>
+                      <button className="post-title-button" onClick={() => setSelectedPost(post)}><h3>{post.title}</h3></button>
+                      <button className="post-open-button" onClick={() => setSelectedPost(post)}><p className="post-excerpt">{post.excerpt}</p><span>Fikrni o‘qish <span aria-hidden="true">↗</span></span></button>
                       <div className="post-footer">
                         <div className="author"><span className="avatar">{post.initials}</span><span>{post.author}</span><span className="meta-divider">·</span><span className="read-time">{post.read}</span></div>
                         <div className="post-actions">
