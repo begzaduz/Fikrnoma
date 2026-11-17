@@ -242,3 +242,45 @@ body { min-height: 100dvh; }
   .short-control { width: 36px; height: 36px; }
   .shorts-footnote { font-size: 9px; }
 }
+
+
+/* Personal profile */
+.profile-page { padding-top: 48px; padding-bottom: 100px; }
+.profile-identity { display: flex; align-items: center; gap: 22px; padding: 30px 0 34px; border-bottom: 1px solid var(--line); }
+.profile-avatar { width: 76px; height: 76px; flex: 0 0 76px; display: grid; place-items: center; border-radius: 50%; background: #e7e2d7; color: #34352e; font: 500 30px Georgia, serif; }
+.profile-identity-copy { flex: 1; }
+.profile-identity-copy h1 { margin: 0 0 8px; font: 600 clamp(29px, 4vw, 43px)/1.12 "Manrope", sans-serif; letter-spacing: -.06em; }
+.profile-identity-copy h1 em { font-family: Georgia, serif; font-weight: 400; }
+.profile-identity-copy p { margin: 0; color: #85867e; font-size: 12px; line-height: 1.6; }
+.profile-edit-label { align-self: flex-start; color: #929389; font-size: 8px; font-weight: 700; letter-spacing: .12em; white-space: nowrap; }
+.profile-stats { display: grid; grid-template-columns: repeat(3, 1fr); padding: 25px 0; border-bottom: 1px solid var(--line); }
+.profile-stats > div { display: flex; flex-direction: column; gap: 5px; }
+.profile-stats strong { color: var(--ink); font: 600 25px "Manrope", sans-serif; letter-spacing: -.05em; }
+.profile-stats span { color: #898a81; font-size: 10px; }
+.profile-tabs { display: flex; gap: 25px; margin: 30px 0 0; border-bottom: 1px solid var(--line); }
+.profile-tabs button { position: relative; padding: 0 0 13px; border: 0; background: transparent; color: #8b8c83; font-size: 11px; cursor: pointer; }
+.profile-tabs button.selected { color: var(--ink); font-weight: 700; }
+.profile-tabs button.selected::after { content: ""; position: absolute; right: 0; bottom: -1px; left: 0; height: 2px; background: var(--ink); }
+.profile-post-list { display: flex; flex-direction: column; }
+.profile-post-row { display: flex; flex-direction: column; align-items: flex-start; gap: 9px; padding: 21px 0; border: 0; border-bottom: 1px solid var(--line); background: transparent; text-align: left; cursor: pointer; }
+.profile-post-category { color: #85867e; font-size: 9px; font-weight: 700; letter-spacing: .12em; }
+.profile-post-row strong { color: var(--ink); font: 600 19px/1.3 "Manrope", sans-serif; letter-spacing: -.035em; }
+.profile-post-excerpt { max-width: 650px; color: #777970; font-size: 12px; line-height: 1.65; }
+.profile-post-open { margin-top: 3px; color: #8b8c83; font-size: 8px; font-weight: 700; letter-spacing: .12em; }
+.profile-post-row:hover .profile-post-open { color: var(--ink); }
+.profile-empty { display: flex; flex-direction: column; align-items: center; padding: 55px 15px; text-align: center; }
+.profile-empty > span { color: #9a9b91; font: 32px Georgia, serif; }
+.profile-empty p { margin: 14px 0; color: #85867e; font-size: 12px; }
+.profile-empty button { padding: 8px 0; border: 0; background: transparent; color: var(--ink); font-size: 10px; font-weight: 700; cursor: pointer; }
+@media (max-width: 650px) {
+  .profile-page { padding-top: 29px; }
+  .profile-identity { align-items: flex-start; flex-wrap: wrap; gap: 14px; padding: 23px 0 25px; }
+  .profile-avatar { width: 58px; height: 58px; flex-basis: 58px; font-size: 24px; }
+  .profile-identity-copy { min-width: 0; }
+  .profile-identity-copy h1 { font-size: 29px; }
+  .profile-identity-copy p { font-size: 11px; }
+  .profile-edit-label { width: 100%; margin-left: 72px; margin-top: -7px; }
+  .profile-tabs { gap: 19px; margin-top: 25px; }
+  .profile-tabs button { font-size: 10px; }
+  .profile-post-row strong { font-size: 17px; }
+}
