@@ -1,4 +1,8 @@
 :root {
+  /* Telegram to‘liq ekran rejimida va "notch"li telefonlarda tepadagi xavfsiz joy */
+  --safe-top: calc(
+    max(env(safe-area-inset-top, 0px), var(--tg-safe-area-inset-top, 0px)) + var(--tg-content-safe-area-inset-top, 0px)
+  );
   font-family: "DM Sans", sans-serif;
   color: #242420;
   background: #f6f5f2;
@@ -44,6 +48,7 @@ select:focus-visible {
 }
 .app-shell {
   min-height: 100vh;
+  padding-top: var(--safe-top);
   padding-bottom: 86px;
 }
 .topbar {

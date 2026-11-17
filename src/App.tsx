@@ -13,6 +13,7 @@ import { HomePage } from "./pages/HomePage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { SavedPage } from "./pages/SavedPage";
 import { SettingsPage } from "./pages/SettingsPage";
+import { haptic, useBackButton } from "./telegram";
 import type { Page, ProfileTab, Section } from "./types";
 
 function App() {
@@ -43,6 +44,7 @@ function App() {
       return;
     }
     const on = kind === "like" ? !post.liked : !post.saved;
+    haptic.tap();
     patchPost(post.id, kind === "like" ? { liked: on, likes: post.likes + (on ? 1 : -1) } : { saved: on });
     try {
       const result = await setReaction(post.id, kind, on);
@@ -50,6 +52,7 @@ function App() {
       setRefreshKey((k) => k + 1);
     } catch {
       patchPost(post.id, kind === "like" ? { liked: post.liked, likes: post.likes } : { saved: post.saved });
+      haptic.error();
       flash("Amal bajarilmadi. Qayta urinib ko‘ring.");
     }
   };
@@ -70,12 +73,26 @@ function App() {
 
   const onPublished = (post: Post) => {
     setPosts((v) => [post, ...v]);
+    haptic.success();
     setComposerOpen(false);
     go("home");
     setRefreshKey((k) => k + 1);
   };
 
   const backToMain = () => setPage("main");
+
+  const navigate = (next: Section) => {
+    haptic.select();
+    go(next);
+  };
+
+  // Telegram "Orqaga" tugmasi: eng ustdagi qatlamni yopadi.
+  const canGoBack = composerOpen || page !== "main" || selected !== null;
+  useBackButton(canGoBack, () => {
+    if (composerOpen) setComposerOpen(false);
+    else if (page !== "main") backToMain();
+    else setSelected(null);
+  });
 
   const content =
     page === "saved" ? (
@@ -124,7 +141,7 @@ function App() {
         onWrite={() => setComposerOpen(true)}
       />
       <main className="main-area">{content}</main>
-      <BottomNav section={section} page={page} go={go} />
+      <BottomNav section={section} page={page} go={navigate} />
       <button className="floating-write" onClick={() => setComposerOpen(true)} aria-label="Fikr yozish">
         <Plus size={22} />
       </button>
