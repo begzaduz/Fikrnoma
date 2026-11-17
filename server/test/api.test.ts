@@ -154,3 +154,23 @@ test("config: bo‘sh .env qiymatlari standart qiymatga tushadi", () => {
   assert.equal(c.corsOrigin, "*");
   assert.throws(() => loadConfig({ NODE_ENV: "production", JWT_SECRET: "", TELEGRAM_BOT_TOKEN: "x" } as NodeJS.ProcessEnv));
 });
+
+
+test("media upload autentifikatsiya va storage konfiguratsiyasi bilan himoyalangan", async () => {
+  const noAuth = await app.inject({
+    method: "POST",
+    url: "/api/media/upload",
+    payload: { fileName: "cover.jpg", mimeType: "image/jpeg", data: "a".repeat(120) },
+  });
+  assert.equal(noAuth.statusCode, 401);
+
+  const headers = await login(4001, "Media test");
+  const noStorage = await app.inject({
+    method: "POST",
+    url: "/api/media/upload",
+    headers,
+    payload: { fileName: "cover.jpg", mimeType: "image/jpeg", data: "a".repeat(120) },
+  });
+  assert.equal(noStorage.statusCode, 503);
+  assert.match(noStorage.json().error, /sozlanmagan/);
+});
