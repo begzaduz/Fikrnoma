@@ -106,7 +106,6 @@ export type Post = {
   content: string;
   author: string;
   initials: string;
-  read: string;
   likes: number;
   comments: number;
   image: string;
@@ -123,7 +122,6 @@ export function toPost(p: ApiPost): Post {
     id: p.id,
     category: p.category,
     time: read,
-    read,
     title: p.title,
     excerpt: p.excerpt,
     content: p.content ?? p.excerpt,
