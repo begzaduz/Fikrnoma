@@ -5,3 +5,9 @@
 @media(max-width:420px){.page-wrap{width:calc(100% - 32px)}.topbar{padding:0 18px}.featured-card{height:345px;border-radius:15px}.featured-copy strong{font-size:29px}.post-row>img{width:66px;height:64px;flex-basis:66px}.post-row-copy strong{font-size:12px}.section-title h2{font-size:17px}.bottom-nav{height:72px;gap:10vw}.bottom-nav button{min-width:65px}.profile-page{padding-top:20px}}
 .toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);z-index:60;max-width:min(92vw,420px);padding:12px 18px;border-radius:14px;background:#242420;color:#f6f5f2;font-size:14px;line-height:1.35;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.2)}
 .publish-btn:disabled{opacity:.6;cursor:default}
+
+
+/* Content cover upload */
+.cover-upload{display:flex;align-items:center;gap:10px;padding:13px 14px;border:1px dashed var(--line,#d8d8d8);border-radius:12px;color:var(--muted,#777);font-size:13px;cursor:pointer}
+.cover-upload input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.cover-preview{display:block;width:100%;max-height:190px;object-fit:cover;border-radius:12px;margin-top:-4px}
