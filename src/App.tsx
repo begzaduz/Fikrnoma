@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import {
   Bookmark,
   Compass,
@@ -78,7 +78,7 @@ function App() {
       current.includes(id) ? current.filter((item) => item !== id) : [...current, id],
     );
 
-  const publishThought = (event: React.FormEvent<HTMLFormElement>) => {
+  const publishThought = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const title = draftTitle.trim();
     const body = draftBody.trim();
