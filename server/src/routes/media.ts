@@ -40,7 +40,8 @@ export function mediaRoutes(app: FastifyInstance, { db, config }: Ctx) {
       .update(`folder=${folder}&timestamp=${timestamp}${config.cloudinaryApiSecret}`)
       .digest("hex");
     const form = new FormData();
-    form.set("file", new Blob([bytes], { type: body.mimeType }), body.fileName);
+    const fileBytes = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
+    form.set("file", new Blob([fileBytes], { type: body.mimeType }), body.fileName);
     form.set("api_key", config.cloudinaryApiKey);
     form.set("timestamp", timestamp);
     form.set("folder", folder);
