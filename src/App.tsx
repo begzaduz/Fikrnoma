@@ -10,7 +10,6 @@ import {
   Plus,
   Search,
   UserRound,
-  Video,
   X,
 } from "lucide-react";
 
