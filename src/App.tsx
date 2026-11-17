@@ -14,6 +14,14 @@ import {
 } from "lucide-react";
 
 type Section = "home" | "shorts" | "profile";
+type ShortThought = { id: number; category: string; quote: string; note: string; author: string; initials: string; tone: string; };
+
+const shortThoughts: ShortThought[] = [
+  { id: 901, category: "TAFAKKUR", quote: "Ko‘p narsani bilish — dono bo‘lish degani emas. Muhimi, bilganing haqida qanday fikrlashing.", note: "Bilim va tafakkur orasidagi farq.", author: "Fikrnoma tahririyati", initials: "F", tone: "sand" },
+  { id: 902, category: "JAMIYAT", quote: "Shahar — xaritadagi ko‘chalar emas. U odamlar bir-biriga qanchalik yaqin yashashidir.", note: "Shaharni inson nuqtai nazaridan ko‘rish.", author: "Fikrnoma tahririyati", initials: "F", tone: "olive" },
+  { id: 903, category: "HAYOT", quote: "Ba’zan oldinga yurish uchun tezlashish emas, nimaga shoshayotganingni anglash kerak.", note: "Shoshilish va maqsad haqida.", author: "Fikrnoma tahririyati", initials: "F", tone: "ink" },
+];
+
 type Post = {
   id: number;
   category: string;
@@ -62,6 +70,7 @@ const initialPosts: Post[] = [
 function App() {
   const [section, setSection] = useState<Section>("home");
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [shortIndex, setShortIndex] = useState(0);
   const [posts, setPosts] = useState<Post[]>(initialPosts);
   const [saved, setSaved] = useState<number[]>([]);
   const [liked, setLiked] = useState<number[]>([]);
@@ -201,11 +210,22 @@ function App() {
         )}
 
         {section === "shorts" && (
-          <div className="content-wrap secondary-view">
-            <p className="eyebrow">QISQA FORMAT</p>
-            <h1>Bir fikr.<br /><em>Bir lahza.</em></h1>
-            <p className="intro-copy">Shorts — murakkab fikrlarni qisqa, vizual va esda qolarli shaklda kashf etish maydoni.</p>
-            <div className="coming-panel"><Video size={25} /><span>SHORTS</span><p>Bu bo‘lim keyingi bosqichda ishga tushadi.</p></div>
+          <div className="shorts-page">
+            <div className="shorts-heading"><div><p className="eyebrow">FIKRNI QISQA HIS ETING</p><h1>Kashf <em>etish.</em></h1></div><span className="shorts-counter">{String(shortIndex + 1).padStart(2, "0")} <i /> {String(shortThoughts.length).padStart(2, "0")}</span></div>
+            <div className="shorts-stage">
+              <article className={"short-card tone-" + shortThoughts[shortIndex].tone}>
+                <div className="short-card-top"><span>FIKRNOMA <b>·</b> {shortThoughts[shortIndex].category}</span><span>0{shortIndex + 1} / 0{shortThoughts.length}</span></div>
+                <div className="short-card-center"><span className="short-quote-mark">“</span><h2>{shortThoughts[shortIndex].quote}</h2><p>{shortThoughts[shortIndex].note}</p></div>
+                <div className="short-card-bottom"><span className="short-author"><i>{shortThoughts[shortIndex].initials}</i>{shortThoughts[shortIndex].author}</span><span className="short-wordmark">f.</span></div>
+              </article>
+              <div className="shorts-controls">
+                <button className="short-control" aria-label="Oldingi fikr" onClick={() => setShortIndex((i) => (i - 1 + shortThoughts.length) % shortThoughts.length)}><ArrowLeft size={17} /></button>
+                <button className={saved.includes(shortThoughts[shortIndex].id) ? "short-control active" : "short-control"} aria-label="Fikrni saqlash" onClick={() => toggleSaved(shortThoughts[shortIndex].id)}><Bookmark size={17} /></button>
+                <button className={liked.includes(shortThoughts[shortIndex].id) ? "short-control active" : "short-control"} aria-label="Fikrni yoqtirish" onClick={() => toggleLiked(shortThoughts[shortIndex].id)}><Heart size={17} /></button>
+                <button className="short-control next" aria-label="Keyingi fikr" onClick={() => setShortIndex((i) => (i + 1) % shortThoughts.length)}><ArrowLeft size={17} /></button>
+              </div>
+            </div>
+            <p className="shorts-footnote">Qisqa fikrlar — katta savollarga kichik eshiklar.</p>
           </div>
         )}
 
