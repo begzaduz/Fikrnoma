@@ -232,9 +232,9 @@ function App() {
       </aside>
 
       <nav className="bottom-nav" aria-label="Asosiy navigatsiya">
-        <button className={section === "home" ? "nav-item selected" : "nav-item"} onClick={() => setSection("home")} aria-label="Bosh sahifa"><Home size={21} strokeWidth={section === "home" ? 2.3 : 1.7} /></button>
-        <button className={section === "shorts" ? "nav-item selected" : "nav-item"} onClick={() => setSection("shorts")} aria-label="Shorts"><Compass size={21} strokeWidth={section === "shorts" ? 2.3 : 1.7} /></button>
-        <button className={section === "profile" ? "nav-item selected" : "nav-item"} onClick={() => setSection("profile")} aria-label="Profil"><UserRound size={21} strokeWidth={section === "profile" ? 2.3 : 1.7} /></button>
+        <button className={section === "home" ? "nav-item selected" : "nav-item"} onClick={() => { setSelectedPost(null); setSection("home"); }} aria-label="Bosh sahifa"><Home size={21} strokeWidth={section === "home" ? 2.3 : 1.7} /></button>
+        <button className={section === "shorts" ? "nav-item selected" : "nav-item"} onClick={() => { setSelectedPost(null); setSection("shorts"); }} aria-label="Shorts"><Compass size={21} strokeWidth={section === "shorts" ? 2.3 : 1.7} /></button>
+        <button className={section === "profile" ? "nav-item selected" : "nav-item"} onClick={() => { setSelectedPost(null); setSection("profile"); }} aria-label="Profil"><UserRound size={21} strokeWidth={section === "profile" ? 2.3 : 1.7} /></button>
       </nav>
 
       {composerOpen && (
