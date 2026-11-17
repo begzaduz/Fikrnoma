@@ -8,6 +8,9 @@ export type Config = {
   seed: boolean;
   adminIds: number[];
   production: boolean;
+  cloudinaryCloudName: string;
+  cloudinaryApiKey: string;
+  cloudinaryApiSecret: string;
 };
 
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
@@ -25,6 +28,9 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
       .map((s) => Number(s.trim()))
       .filter((n) => Number.isInteger(n) && n > 0),
     production,
+    cloudinaryCloudName: env.CLOUDINARY_CLOUD_NAME || "",
+    cloudinaryApiKey: env.CLOUDINARY_API_KEY || "",
+    cloudinaryApiSecret: env.CLOUDINARY_API_SECRET || "",
   };
   if (production) {
     if (!env.JWT_SECRET || env.JWT_SECRET.length < 32) throw new Error("JWT_SECRET (kamida 32 belgi) production uchun majburiy");
