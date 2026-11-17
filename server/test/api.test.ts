@@ -146,3 +146,11 @@ test("Telegram initData tekshiruvi", async () => {
   const no = await app.inject({ method: "POST", url: "/api/auth/telegram", payload: { initData: "hash=" + "0".repeat(64) + "&user=x" } });
   assert.equal(no.statusCode, 401);
 });
+
+test("config: bo‘sh .env qiymatlari standart qiymatga tushadi", () => {
+  const c = loadConfig({ JWT_SECRET: "", PORT: "", CORS_ORIGIN: "", TELEGRAM_BOT_TOKEN: "" } as NodeJS.ProcessEnv);
+  assert.equal(c.port, 3000);
+  assert.ok(c.jwtSecret.length > 10);
+  assert.equal(c.corsOrigin, "*");
+  assert.throws(() => loadConfig({ NODE_ENV: "production", JWT_SECRET: "", TELEGRAM_BOT_TOKEN: "x" } as NodeJS.ProcessEnv));
+});

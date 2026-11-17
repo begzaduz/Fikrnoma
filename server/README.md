@@ -10,8 +10,7 @@ npm install
 npm run dev               # http://localhost:3000  (SEED=true bo'lsa namunaviy ma'lumotlar bilan)
 npm test
 ```
-`.env` faylini Node o'zi o'qimaydi, shuning uchun: `node --env-file=.env ./node_modules/.bin/tsx watch src/index.ts`
-yoki o'zgaruvchilarni terminalda `export` qiling.
+`npm run dev` va `npm start` `.env` faylini o'zi o'qiydi (bo'lmasa muhit o'zgaruvchilaridan foydalanadi).
 
 Production: `npm run build && NODE_ENV=production npm start` (JWT_SECRET va TELEGRAM_BOT_TOKEN majburiy).
 Baza — bitta fayl (`DB_PATH`), uni muntazam zaxiralab turing.

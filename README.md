@@ -24,4 +24,19 @@ npm run build
 - **Shorts** — keyingi bosqichdagi qisqa video format
 - **Profil** — foydalanuvchi sahifasi va saqlangan materiallar
 
-The first iteration is a responsive frontend prototype. Authentication, persistence, content management and Telegram Mini App integration will be added in later steps.
+## Backend
+`server/` papkasida Node.js + Fastify + SQLite API bor (kirish Telegram orqali, JWT). Batafsil: [`server/README.md`](server/README.md).
+
+### Lokal ishga tushirish (ikkita terminal)
+```bash
+# 1-terminal: backend  (http://localhost:3000)
+cd server && cp .env.example .env && npm install && npm run dev
+
+# 2-terminal: frontend (http://localhost:5173, /api so'rovlari backendga yo'naltiriladi)
+npm install && npm run dev
+```
+Oddiy brauzerda lokal ishlaganda `DEV_AUTH=true` bo'lsa, ilova avtomatik test foydalanuvchi bilan kiradi. Telegram Mini App ichida `initData` bilan kiradi. Production'da frontend `VITE_API_URL` orqali backend manziliga ulanadi.
+
+### Hozircha ulangan
+Fikrlar ro'yxati, "Bugungi tanlov", to'liq maqola, like, saqlash, yangi fikr yozish, Kashf etish, qisqa fikrlar (Shorts), profil va statistika.
+Ulanmagan: izohlar interfeysi, sozlamalarni saqlash, obuna tugmasi, rasm yuklash.

@@ -13,14 +13,14 @@ export type Config = {
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
   const production = env.NODE_ENV === "production";
   const config: Config = {
-    port: Number(env.PORT ?? 3000),
-    dbPath: env.DB_PATH ?? "./data/fikrnoma.db",
-    jwtSecret: env.JWT_SECRET ?? "dev-only-secret-change-me",
-    botToken: env.TELEGRAM_BOT_TOKEN ?? "",
-    corsOrigin: env.CORS_ORIGIN ?? "*",
+    port: Number(env.PORT || 3000),
+    dbPath: env.DB_PATH || "./data/fikrnoma.db",
+    jwtSecret: env.JWT_SECRET || "dev-only-secret-change-me",
+    botToken: env.TELEGRAM_BOT_TOKEN || "",
+    corsOrigin: env.CORS_ORIGIN || "*",
     devAuth: env.DEV_AUTH === "true" && !production,
     seed: env.SEED === "true",
-    adminIds: (env.ADMIN_TELEGRAM_IDS ?? "")
+    adminIds: (env.ADMIN_TELEGRAM_IDS || "")
       .split(",")
       .map((s) => Number(s.trim()))
       .filter((n) => Number.isInteger(n) && n > 0),
