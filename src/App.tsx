@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
-import { ArrowLeft, Bookmark, ChevronRight, Compass, Heart, Home, LogOut, Plus, Search, Settings, SlidersHorizontal, UserRound, X, Bell, Globe, Sun, CircleHelp, Info } from "lucide-react";
-import { ApiError, createPost, fetchFeatured, fetchMe, fetchMyList, fetchPost, fetchPosts, fetchShorts, fetchStats, login, setReaction, type Me, type Post, type Short, type Stats } from "./api";
+import { ArrowLeft, Bookmark, ChevronRight, Compass, Heart, Home, LogOut, Plus, Search, Settings, SlidersHorizontal, UserRound, X, Bell, Globe, Sun, CircleHelp, Info, ImagePlus } from "lucide-react";
+import { ApiError, createPost, fetchFeatured, fetchMe, fetchMyList, fetchPost, fetchPosts, fetchShorts, fetchStats, login, setReaction, uploadImage, type Me, type Post, type Short, type Stats } from "./api";
 
 type Section = "home" | "shorts" | "profile";
 type Page = "main" | "saved" | "settings";
@@ -27,6 +27,8 @@ function App(){
  const [title,setTitle]=useState("");
  const [body,setBody]=useState("");
  const [kind,setKind]=useState("TAFAKKUR");
+ const [coverFile,setCoverFile]=useState<File|null>(null);
+ const [coverPreview,setCoverPreview]=useState("");
  const [shortIndex,setShortIndex]=useState(0);
  const [profileTab,setProfileTab]=useState<"mine"|"saved"|"liked">("saved");
  const [,setSettingsTab]=useState("Til");
@@ -62,8 +64,8 @@ function App(){
  const publish=async(e:FormEvent)=>{e.preventDefault();if(!title.trim()||!body.trim()||posting)return;
   if(!me){flash("Fikr yozish uchun Telegram orqali kiring.");return;}
   setPosting(true);
-  try{const p=await createPost({category:kind,title:title.trim(),content:body.trim()});setPosts(v=>[p,...v]);setTitle("");setBody("");setComposer(false);setSection("home");setPage("main");setTick(t=>t+1);}
-  catch(err){flash(err instanceof ApiError&&err.status===400?"Sarlavha kamida 3, fikr kamida 10 belgidan iborat bo‘lsin.":"Yuborib bo‘lmadi. Qayta urinib ko‘ring.");}
+  try{const imageUrl=coverFile?await uploadImage(coverFile):undefined;const p=await createPost({category:kind,title:title.trim(),content:body.trim(),...(imageUrl?{imageUrl}:{})});setPosts(v=>[p,...v]);setTitle("");setBody("");setCoverFile(null);setCoverPreview("");setComposer(false);setSection("home");setPage("main");setTick(t=>t+1);}
+  catch(err){flash(err instanceof ApiError?err.message:"Yuborib bo‘lmadi. Qayta urinib ko‘ring.");}
   finally{setPosting(false);}
  };
  const openPost=(p:Post)=>{setSelected(p);setPage("main");fetchPost(p.id).then(full=>setSelected(v=>v&&v.id===full.id?full:v)).catch(()=>{});};
@@ -91,7 +93,7 @@ function App(){
   </main>
   <nav className="bottom-nav"><button className={section==="home"&&page==="main"?"active":""} onClick={()=>go("home")}><Home size={20}/><span>Bosh sahifa</span></button><button className={section==="shorts"&&page==="main"?"active":""} onClick={()=>go("shorts")}><Compass size={20}/><span>Kashf etish</span></button><button className={section==="profile"&&page==="main"?"active":""} onClick={()=>go("profile")}><UserRound size={20}/><span>Profil</span></button></nav>
   <button className="floating-write" onClick={()=>setComposer(true)} aria-label="Fikr yozish"><Plus size={22}/></button>
-  {composer&&<div className="modal-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)setComposer(false)}}><form className="composer-modal" onSubmit={publish}><div className="modal-head"><div><p className="eyebrow">FIKRNOMAGA QO‘SHING</p><h2>Fikringizni ulashing.</h2></div><button type="button" onClick={()=>setComposer(false)}><X size={19}/></button></div><label>Yo‘nalish</label><select value={kind} onChange={e=>setKind(e.target.value)}><option>TAFAKKUR</option><option>HAYOT</option><option>JAMIYAT</option><option>FALSAFA</option><option>PSIXOLOGIYA</option><option>BIZNES</option></select><label>Sarlavha</label><input value={title} onChange={e=>setTitle(e.target.value)} maxLength={120} placeholder="Fikringizni bir jumlada ifodalang..." required/><label>Fikr</label><textarea value={body} onChange={e=>setBody(e.target.value)} rows={6} placeholder="Fikringizni batafsil yozing..." required/><button className="publish-btn" type="submit" disabled={posting}>{posting?"Yuborilmoqda…":"Ulashish"} <ChevronRight size={17}/></button><small className="session-note">Fikringiz Fikrnoma’da e’lon qilinadi.</small></form></div>}
+  {composer&&<div className="modal-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)setComposer(false)}}><form className="composer-modal" onSubmit={publish}><div className="modal-head"><div><p className="eyebrow">FIKRNOMAGA QO‘SHING</p><h2>Fikringizni ulashing.</h2></div><button type="button" onClick={()=>{setComposer(false);setCoverFile(null);setCoverPreview("");}}><X size={19}/></button></div><label>Yo‘nalish</label><select value={kind} onChange={e=>setKind(e.target.value)}><option>TAFAKKUR</option><option>HAYOT</option><option>JAMIYAT</option><option>FALSAFA</option><option>PSIXOLOGIYA</option><option>BIZNES</option></select><label>Sarlavha</label><input value={title} onChange={e=>setTitle(e.target.value)} maxLength={120} placeholder="Fikringizni bir jumlada ifodalang..." required/><label>Fikr</label><textarea value={body} onChange={e=>setBody(e.target.value)} rows={6} placeholder="Fikringizni batafsil yozing..." required/><label className="cover-upload"><ImagePlus size={18}/><span>{coverFile?coverFile.name:"Muqova rasmini qo‘shish"}</span><input type="file" accept="image/jpeg,image/png,image/webp" onChange={e=>{const file=e.target.files?.[0];if(!file)return;if(file.size>5*1024*1024){flash("Rasm hajmi 5 MB dan oshmasligi kerak.");e.currentTarget.value="";return;}setCoverFile(file);const reader=new FileReader();reader.onload=()=>setCoverPreview(String(reader.result??""));reader.readAsDataURL(file);}}/></label>{coverPreview&&<img className="cover-preview" src={coverPreview} alt="Muqova ko‘rinishi"/>}<button className="publish-btn" type="submit" disabled={posting}>{posting?"Yuborilmoqda…":"Ulashish"} <ChevronRight size={17}/></button><small className="session-note">Fikringiz Fikrnoma’da e’lon qilinadi.</small></form></div>}
   {notice&&<div className="toast" role="status">{notice}</div>}
  </div>;
 }

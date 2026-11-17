@@ -15,6 +15,8 @@ npm test
 Production: `npm run build && NODE_ENV=production npm start` (JWT_SECRET va TELEGRAM_BOT_TOKEN majburiy).
 Baza — bitta fayl (`DB_PATH`), uni muntazam zaxiralab turing.
 
+Muqova rasmlarini yuklash uchun Cloudinary hisobini ochib, `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY` va `CLOUDINARY_API_SECRET` qiymatlarini backend hosting muhitiga kiriting. Rasm fayli backend orqali tekshiriladi va Cloudinary'da `fikrnoma/covers` papkasiga saqlanadi. JPG, PNG va WEBP, 5 MB gacha. Ushbu qiymatlar sozlanmaguncha rasm yuklash endpointi 503 qaytaradi; matnli postlar ishlashda davom etadi.
+
 ## Kirish (auth)
 | Metod | Yo'l | Izoh |
 |---|---|---|
@@ -37,6 +39,7 @@ Keyingi so'rovlarda: `Authorization: Bearer <token>`.
 | GET / POST | `/api/posts/:id/comments` | POST: ha | Izohlar |
 | DELETE | `/api/comments/:id` | ha | Faqat muallif yoki admin |
 | GET | `/api/shorts` | – | Qisqa fikrlar |
+| POST | `/api/media/upload` | ha | JPG, PNG yoki WEBP muqova rasmini Cloudinary'ga yuklaydi; 5 MB gacha |
 | GET / PATCH / DELETE | `/api/me` | ha | Profil, sozlamalar (`language`, `theme`, `notifications`) |
 | GET | `/api/me/stats` | ha | Fikrlar, sevimlilar, obunachilar, bu oyda o'qilgan |
 | GET | `/api/me/posts` `/saved` `/liked` | ha | Profil tablari |
@@ -48,4 +51,4 @@ Xatolar: `{ "error": "..." }`, tekshiruv xatosida qo'shimcha `issues`.
 ## Eslatmalar
 - Qidiruv SQLite `LIKE` — o'zbekcha harflarda katta/kichik harf farqiga sezgir bo'lishi mumkin.
 - `/api/me/saved` va `/liked` yangi fikrlar birinchi tartibida (saqlangan vaqt bo'yicha emas).
-- Rasm yuklash hali yo'q: `imageUrl` faqat `https://` havola.
+- Rasm yuklash Cloudinary sozlamalariga bog‘liq; hostingda uchta `CLOUDINARY_*` secret kiritilishi kerak.

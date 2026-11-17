@@ -146,6 +146,21 @@ export const fetchMe = () => request<Me>("GET", "/api/me");
 export const fetchStats = () => request<Stats>("GET", "/api/me/stats");
 export const fetchMyList = async (kind: "posts" | "saved" | "liked") =>
   (await request<{ items: ApiPost[] }>("GET", `/api/me/${kind}?limit=50`)).items.map(toPost);
-export const createPost = async (b: { category: string; title: string; content: string }) => toPost(await request<ApiPost>("POST", "/api/posts", b));
+export const createPost = async (b: { category: string; title: string; content: string; imageUrl?: string }) =>
+  toPost(await request<ApiPost>("POST", "/api/posts", b));
+
+export async function uploadImage(file: File): Promise<string> {
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  let binary = "";
+  for (let offset = 0; offset < bytes.length; offset += 0x8000) {
+    binary += String.fromCharCode(...bytes.subarray(offset, offset + 0x8000));
+  }
+  const result = await request<{ url: string }>("POST", "/api/media/upload", {
+    fileName: file.name,
+    mimeType: file.type,
+    data: btoa(binary),
+  });
+  return result.url;
+}
 export const setReaction = (id: number, kind: "like" | "save", on: boolean) =>
   request<{ likes?: number }>(on ? "PUT" : "DELETE", `/api/posts/${id}/${kind}`);
