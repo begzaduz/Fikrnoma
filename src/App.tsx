@@ -1,5 +1,5 @@
 import { useMemo, useState, type FormEvent } from "react";
-import { ArrowLeft, Bookmark, Check, ChevronRight, Compass, Heart, Home, LogOut, Plus, Search, Settings, SlidersHorizontal, UserRound, X, Bell, Globe, Sun, CircleHelp, Info } from "lucide-react";
+import { ArrowLeft, Bookmark, ChevronRight, Compass, Heart, Home, LogOut, Plus, Search, Settings, SlidersHorizontal, UserRound, X, Bell, Globe, Sun, CircleHelp, Info } from "lucide-react";
 
 type Section = "home" | "shorts" | "profile";
 type Page = "main" | "saved" | "settings";
@@ -40,7 +40,7 @@ function App(){
  const [kind,setKind]=useState("TAFAKKUR");
  const [shortIndex,setShortIndex]=useState(0);
  const [profileTab,setProfileTab]=useState<"mine"|"saved"|"liked">("saved");
- const [settingsTab,setSettingsTab]=useState("Til");
+ const [,setSettingsTab]=useState("Til");
  const toggle=(id:number,list:number[],setter:(v:number[])=>void)=>setter(list.includes(id)?list.filter(x=>x!==id):[...list,id]);
  const filtered=useMemo(()=>posts.filter(p=>(category==="Barchasi"||p.category.toLowerCase()===category.toLowerCase())&&(!query||(p.title+" "+p.excerpt).toLowerCase().includes(query.toLowerCase()))),[posts,category,query]);
  const publish=(e:FormEvent)=>{e.preventDefault();if(!title.trim()||!body.trim())return;const p:Post={id:Date.now(),category:kind,time:"Hozirgina",title:title.trim(),excerpt:body.trim().slice(0,150),content:body.trim(),author:"Siz",initials:"S",read:"1 daqiqa o‘qish",likes:0,comments:0,image:photos.books};setPosts(v=>[p,...v]);setTitle("");setBody("");setComposer(false);setSection("home");setPage("main");};
