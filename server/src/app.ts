@@ -11,11 +11,12 @@ import { commentRoutes } from "./routes/comments.js";
 import { meRoutes } from "./routes/me.js";
 import { userRoutes } from "./routes/users.js";
 import { shortsRoutes } from "./routes/shorts.js";
+import { mediaRoutes } from "./routes/media.js";
 
 export type Ctx = { db: Db; config: Config };
 
 export async function buildApp(ctx: Ctx, opts: { logger?: boolean } = {}) {
-  const app = Fastify({ logger: opts.logger ?? false, trustProxy: true, bodyLimit: 256 * 1024 });
+  const app = Fastify({ logger: opts.logger ?? false, trustProxy: true, bodyLimit: 8 * 1024 * 1024 });
 
   await app.register(cors, {
     origin: ctx.config.corsOrigin === "*" ? true : ctx.config.corsOrigin.split(",").map((s) => s.trim()),
@@ -41,6 +42,7 @@ export async function buildApp(ctx: Ctx, opts: { logger?: boolean } = {}) {
   meRoutes(app, ctx);
   userRoutes(app, ctx);
   shortsRoutes(app, ctx);
+  mediaRoutes(app, ctx);
 
   return app;
 }
