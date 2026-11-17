@@ -39,4 +39,4 @@ Oddiy brauzerda lokal ishlaganda `DEV_AUTH=true` bo'lsa, ilova avtomatik test fo
 
 ### Hozircha ulangan
 Fikrlar ro'yxati, "Bugungi tanlov", to'liq maqola, like, saqlash, yangi fikr yozish, Kashf etish, qisqa fikrlar (Shorts), profil va statistika.
-Ulanmagan: izohlar interfeysi, sozlamalarni saqlash, obuna tugmasi, rasm yuklash.
+Ulanmagan: izohlar interfeysi, sozlamalarni saqlash, obuna tugmasi.
