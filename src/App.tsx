@@ -71,6 +71,7 @@ function App() {
   const [section, setSection] = useState<Section>("home");
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [shortIndex, setShortIndex] = useState(0);
+  const [profileTab, setProfileTab] = useState<"mine" | "saved" | "liked">("mine");
   const [posts, setPosts] = useState<Post[]>(initialPosts);
   const [saved, setSaved] = useState<number[]>([]);
   const [liked, setLiked] = useState<number[]>([]);
@@ -230,12 +231,36 @@ function App() {
         )}
 
         {section === "profile" && (
-          <div className="content-wrap secondary-view">
+          <div className="content-wrap profile-page">
             <p className="eyebrow">SHAXSIY MAKON</p>
-            <h1>Fikrlaringiz<br /><em>shu yerdan</em> boshlanadi.</h1>
-            <p className="intro-copy">Profil, saqlangan materiallar va o‘zingiz ulashgan fikrlar shu yerda jamlanadi.</p>
-            <div className="profile-stats"><div><strong>{saved.length}</strong><span>Saqlangan</span></div><div><strong>{liked.length}</strong><span>Yoqtirilgan</span></div><div><strong>{posts.filter((post) => post.author === "Siz").length}</strong><span>Fikrlaringiz</span></div></div>
-            <div className="coming-panel"><UserRound size={25} /><span>PROFIL</span><p>Hisob yaratish va shaxsiy sahifa keyingi bosqichda qo‘shiladi.</p></div>
+            <section className="profile-identity">
+              <div className="profile-avatar">S</div>
+              <div className="profile-identity-copy"><h1>Sizning <em>makoningiz.</em></h1><p>Fikrlang, yozing va o‘zingiz uchun muhim g‘oyalarni jamlang.</p></div>
+              <span className="profile-edit-label">MEHMON PROFILI</span>
+            </section>
+            <div className="profile-stats">
+              <div><strong>{saved.length}</strong><span>Saqlangan</span></div>
+              <div><strong>{liked.length}</strong><span>Yoqtirilgan</span></div>
+              <div><strong>{posts.filter((post) => post.author === "Siz").length}</strong><span>Fikrlaringiz</span></div>
+            </div>
+            <div className="profile-tabs" role="tablist" aria-label="Profil materiallari">
+              <button className={profileTab === "mine" ? "selected" : ""} onClick={() => setProfileTab("mine")}>Fikrlarim</button>
+              <button className={profileTab === "saved" ? "selected" : ""} onClick={() => setProfileTab("saved")}>Saqlanganlar</button>
+              <button className={profileTab === "liked" ? "selected" : ""} onClick={() => setProfileTab("liked")}>Yoqtirganlar</button>
+            </div>
+            <div className="profile-post-list">
+              {(profileTab === "mine" ? posts.filter((post) => post.author === "Siz") : profileTab === "saved" ? posts.filter((post) => saved.includes(post.id)) : posts.filter((post) => liked.includes(post.id))).map((post) => (
+                <button className="profile-post-row" key={post.id} onClick={() => setSelectedPost(post)}>
+                  <span className="profile-post-category">{post.category}</span>
+                  <strong>{post.title}</strong>
+                  <span className="profile-post-excerpt">{post.excerpt}</span>
+                  <span className="profile-post-open">O‘QISH ↗</span>
+                </button>
+              ))}
+              {(profileTab === "mine" ? posts.filter((post) => post.author === "Siz") : profileTab === "saved" ? posts.filter((post) => saved.includes(post.id)) : posts.filter((post) => liked.includes(post.id))).length === 0 && (
+                <div className="profile-empty"><span>{profileTab === "mine" ? "✳" : profileTab === "saved" ? "⌑" : "♡"}</span><p>{profileTab === "mine" ? "Hali fikr ulashmagansiz." : profileTab === "saved" ? "Saqlangan fikrlaringiz shu yerda ko‘rinadi." : "Yoqtirgan fikrlaringiz shu yerda jamlanadi."}</p><button onClick={() => profileTab === "mine" ? setComposerOpen(true) : setSection("home")}>{profileTab === "mine" ? "Fikr yozish" : "Fikrlarni kashf etish"} ↗</button></div>
+              )}
+            </div>
           </div>
         )}
       </main>
