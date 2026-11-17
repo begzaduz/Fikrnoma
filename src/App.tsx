@@ -1,313 +1,80 @@
-import { useState, type FormEvent } from "react";
-import {
-  ArrowLeft,
-  Bookmark,
-  Compass,
-  Heart,
-  Home,
-  MessageCircle,
-  MoreHorizontal,
-  Plus,
-  Search,
-  UserRound,
-  X,
-} from "lucide-react";
+import { useMemo, useState, type FormEvent } from "react";
+import { ArrowLeft, Bookmark, Check, ChevronRight, Compass, Heart, Home, LogOut, Plus, Search, Settings, SlidersHorizontal, UserRound, X, Bell, Globe, Sun, CircleHelp, Info } from "lucide-react";
 
 type Section = "home" | "shorts" | "profile";
-type ShortThought = { id: number; category: string; quote: string; note: string; author: string; initials: string; tone: string; };
-
-const shortThoughts: ShortThought[] = [
-  { id: 901, category: "TAFAKKUR", quote: "Ko‘p narsani bilish — dono bo‘lish degani emas. Muhimi, bilganing haqida qanday fikrlashing.", note: "Bilim va tafakkur orasidagi farq.", author: "Fikrnoma tahririyati", initials: "F", tone: "sand" },
-  { id: 902, category: "JAMIYAT", quote: "Shahar — xaritadagi ko‘chalar emas. U odamlar bir-biriga qanchalik yaqin yashashidir.", note: "Shaharni inson nuqtai nazaridan ko‘rish.", author: "Fikrnoma tahririyati", initials: "F", tone: "olive" },
-  { id: 903, category: "HAYOT", quote: "Ba’zan oldinga yurish uchun tezlashish emas, nimaga shoshayotganingni anglash kerak.", note: "Shoshilish va maqsad haqida.", author: "Fikrnoma tahririyati", initials: "F", tone: "ink" },
-];
-
-type Post = {
-  id: number;
-  category: string;
-  time: string;
-  title: string;
-  excerpt: string;
-  content: string;
-  author: string;
-  initials: string;
-  read: string;
-  likes: number;
-  comments: number;
+type Page = "main" | "saved" | "settings";
+type Post = { id:number; category:string; time:string; title:string; excerpt:string; content:string; author:string; initials:string; read:string; likes:number; comments:number; image:string; };
+const photos = {
+  city:"https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=1200&q=85",
+  thinker:"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=85",
+  coffee:"https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1200&q=85",
+  books:"https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=900&q=85",
+  plant:"https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?auto=format&fit=crop&w=900&q=85",
+  portrait:"https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80",
+  minimal:"https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=85",
 };
-
-const initialPosts: Post[] = [
-  {
-    id: 1,
-    category: "TAFAKKUR",
-    time: "5 daqiqa",
-    title: "Biz ko‘proq ma’lumotga egamiz. Ammo ko‘proq tushunyapmizmi?",
-    excerpt:
-      "Axborot ko‘paygani sari fikrlashga ehtiyoj kamaymaydi. Aksincha, eng muhim ko‘nikma — keraksiz shovqin ichidan ma’noni ajrata olish.",
-    content: "Bugun istalgan savolga bir necha soniyada javob topish mumkin. Ma’lumot olish hech qachon bunchalik oson bo‘lmagan. Ammo ma’lumotning ko‘pligi har doim ham tushunishning chuqurligini anglatmaydi.\n\nBiz ko‘pincha o‘qigan narsamizni anglagandek his qilamiz. Aslida esa fikrlarimizni shakllantirish uchun to‘xtash, savol berish va turli nuqtai nazarlarni solishtirish kerak.\n\nBalki bugungi eng muhim ko‘nikma ko‘proq ma’lumot yig‘ish emas, balki kerakli savolni bera olishdir.",
-    author: "Muhammadali Karimov",
-    initials: "MK",
-    read: "4 daqiqa o‘qish",
-    likes: 128,
-    comments: 18,
-  },
-  {
-    id: 2,
-    category: "JAMIYAT",
-    time: "Kecha",
-    title: "Shaharlar odamlar uchun quriladimi yoki avtomobillar uchun?",
-    excerpt:
-      "Ko‘chalarimiz qanday ko‘rinishda bo‘lishi kerakligi — bu shunchaki arxitektura masalasi emas. Bu qanday hayot kechirishni tanlashimiz haqida.",
-    content: "Shahar ko‘chalariga qarab, u yerda kim uchun joy ajratilganini bilish mumkin. Keng yo‘llar, katta avtoturargohlar va piyodalar uchun tor yo‘laklar shahar qanday ustuvorliklar asosida qurilganini ko‘rsatadi.\n\nShahar faqat binolar va yo‘llardan iborat emas. U odamlar uchrashadigan, suhbatlashadigan, dam oladigan va kundalik hayotini kechiradigan makondir.\n\nShuning uchun shahar haqida gapirganda transport tezliginigina emas, insonning qulayligi va erkin harakatlanishini ham o‘ylashimiz kerak.",
-    author: "Aziza Rahimova",
-    initials: "AR",
-    read: "6 daqiqa o‘qish",
-    likes: 94,
-    comments: 12,
-  },
+const initialPosts:Post[] = [
+ {id:1,category:"TAFAKKUR",time:"3 daqiqa o‘qish",title:"Ba’zan to‘g‘ri savol — javobdan muhimroq.",excerpt:"Biz javoblarni izlashga shoshilamiz. Ammo ayrim savollar bizni butunlay boshqa tomonga boshlaydi.",content:"Biz javoblarni izlashga shoshilamiz. Chunki javob aniq, o‘lchash mumkin va ko‘pincha xotirjamlik beradi. Savol esa aksincha — fikrimizni bezovta qiladi.\n\nLekin rivojlanish ko‘pincha tayyor javobdan emas, to‘g‘ri qo‘yilgan savoldan boshlanadi. Savol biz ko‘rmayotgan jihatni ochadi, odatiy qarashlarimizni qayta ko‘rib chiqishga undaydi.\n\nBalki ba’zan javob topishdan oldin, nimani so‘rayotganimizni aniqlab olishimiz kerakdir.",author:"Fikrnoma",initials:"F",read:"3 daqiqa o‘qish",likes:128,comments:18,image:photos.city},
+ {id:2,category:"HAYOT",time:"2 daqiqa o‘qish",title:"Kamroq shovqin — ko‘proq mazmun.",excerpt:"Har bir bo‘shliqni nimadir bilan to‘ldirish shart emas. Ba’zan sukut ham fikrni tartibga soladi.",content:"Har kuni bizga minglab xabarlar, fikrlar va tasvirlar yetib keladi. Ularning barchasiga munosabat bildirishga urinish esa ichki ovozimizni eshitishni qiyinlashtiradi.\n\nSukut — hech narsa bo‘lmayotgan vaqt emas. U fikrlar joyiga tushadigan, muhim va ikkinchi darajali narsalar ajraladigan makon bo‘lishi mumkin.",author:"Aziza Rahimova",initials:"AR",read:"2 daqiqa o‘qish",likes:86,comments:9,image:photos.thinker},
+ {id:3,category:"FALSAFA",time:"4 daqiqa o‘qish",title:"Baxt — bu orzu emas, holatdir.",excerpt:"Baxtni uzoqdagi marraga aylantirsak, bugungi kunimizni sezmay qolishimiz mumkin.",content:"Baxt ko‘pincha katta maqsadlar bilan bog‘lanadi. Go‘yoki biror narsaga erishsak, keyin hammasi yaxshi bo‘ladigandek. Ammo hayot faqat marralardan iborat emas.\n\nBaxt ba’zan oddiy lahzada, yaqin inson bilan suhbatda yoki o‘zimizni anglashda namoyon bo‘ladi.",author:"Fikrnoma",initials:"F",read:"4 daqiqa o‘qish",likes:73,comments:6,image:photos.coffee},
+ {id:4,category:"JAMIYAT",time:"5 daqiqa o‘qish",title:"Kelajak haqida kim o‘ylayapti?",excerpt:"Bugungi qarorlar ertangi muhitni yaratadi. Kelajak esa uzoqdagi mavhum tushuncha emas.",content:"Kelajak o‘z-o‘zidan paydo bo‘lmaydi. U bugun qilayotgan tanlovlarimiz, qurayotgan tizimlarimiz va e’tibor berayotgan qadriyatlarimizdan shakllanadi.",author:"Bekzod M.",initials:"BM",read:"5 daqiqa o‘qish",likes:51,comments:4,image:photos.minimal},
 ];
-
-function App() {
-  const [section, setSection] = useState<Section>("home");
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [shortIndex, setShortIndex] = useState(0);
-  const [profileTab, setProfileTab] = useState<"mine" | "saved" | "liked">("mine");
-  const [posts, setPosts] = useState<Post[]>(initialPosts);
-  const [saved, setSaved] = useState<number[]>([]);
-  const [liked, setLiked] = useState<number[]>([]);
-  const [query, setQuery] = useState("");
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [composerOpen, setComposerOpen] = useState(false);
-  const [draftTitle, setDraftTitle] = useState("");
-  const [draftBody, setDraftBody] = useState("");
-  const [draftCategory, setDraftCategory] = useState("TAFAKKUR");
-
-  const toggleSaved = (id: number) =>
-    setSaved((current) =>
-      current.includes(id) ? current.filter((item) => item !== id) : [...current, id],
-    );
-
-  const toggleLiked = (id: number) =>
-    setLiked((current) =>
-      current.includes(id) ? current.filter((item) => item !== id) : [...current, id],
-    );
-
-  const publishThought = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const title = draftTitle.trim();
-    const body = draftBody.trim();
-    if (!title || !body) return;
-
-    const newPost: Post = {
-      id: Date.now(),
-      category: draftCategory,
-      time: "Hozirgina",
-      title,
-      excerpt: body.length > 180 ? body.slice(0, 177) + "..." : body,
-      content: body,
-      author: "Siz",
-      initials: "S",
-      read: `${Math.max(1, Math.ceil(body.split(/\s+/).length / 180))} daqiqa o‘qish`,
-      likes: 0,
-      comments: 0,
-    };
-
-    setPosts((current) => [newPost, ...current]);
-    setSection("home");
-    setQuery("");
-    setDraftTitle("");
-    setDraftBody("");
-    setComposerOpen(false);
-  };
-
-  const filteredPosts = posts.filter(
-    (post) =>
-      post.title.toLowerCase().includes(query.toLowerCase()) ||
-      post.excerpt.toLowerCase().includes(query.toLowerCase()),
-  );
-
-  return (
-    <div className="app-shell">
-      <aside className="side-rail">
-        <a className="brand" href="#" onClick={(event) => { event.preventDefault(); setSection("home"); }} aria-label="Fikrnoma bosh sahifa">
-          <span className="brand-mark">f.</span>
-          <span className="brand-name">fikrnoma</span>
-        </a>
-        <div className="rail-bottom">
-          <button className="rail-icon" aria-label="Yangi fikr yozish" onClick={() => setComposerOpen(true)}><Plus size={20} /></button>
-          <button className="rail-icon" aria-label="Profil" onClick={() => setSection("profile")}><UserRound size={20} /></button>
-        </div>
-      </aside>
-
-      <main className="main-area">
-        <header className="topbar">
-          <div className="mobile-brand"><span className="brand-mark">f.</span><span className="brand-name">fikrnoma</span></div>
-          <div className="topbar-note"><span className="live-dot" /> Fikrlar uchun makon</div>
-          <div className="topbar-actions">
-            <button className="icon-button search-trigger" aria-label="Qidirish" onClick={() => setSearchOpen((open) => !open)}><Search size={19} /></button>
-            <button className="write-button" onClick={() => setComposerOpen(true)}><Plus size={16} /><span>Fikr yozish</span></button>
-          </div>
-        </header>
-
-        {searchOpen && (
-          <div className="mobile-search">
-            <Search size={16} />
-            <input autoFocus value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Fikrlarni izlash..." />
-            <button aria-label="Qidiruvni yopish" onClick={() => { setSearchOpen(false); setQuery(""); }}><X size={16} /></button>
-          </div>
-        )}
-
-        {selectedPost ? (
-          <article className="content-wrap article-view">
-            <button className="back-button" onClick={() => setSelectedPost(null)}><ArrowLeft size={16} /> Orqaga</button>
-            <div className="article-topline"><span>{selectedPost.category}</span><i />{selectedPost.time}</div>
-            <h1>{selectedPost.title}</h1>
-            <div className="article-byline"><span className="avatar">{selectedPost.initials}</span><strong>{selectedPost.author}</strong><span>·</span><span>{selectedPost.read}</span></div>
-            <div className="article-divider" />
-            <div className="article-content">{selectedPost.content.split(/\n\n+/).map((paragraph, index) => <p key={index}>{paragraph}</p>)}</div>
-            <div className="article-actions">
-              <button className={liked.includes(selectedPost.id) ? "action active" : "action"} onClick={() => toggleLiked(selectedPost.id)}><Heart size={18} /> {selectedPost.likes + (liked.includes(selectedPost.id) ? 1 : 0)} <span>Yoqdi</span></button>
-              <button className={saved.includes(selectedPost.id) ? "action active" : "action"} onClick={() => toggleSaved(selectedPost.id)}><Bookmark size={18} /> <span>{saved.includes(selectedPost.id) ? "Saqlandi" : "Saqlash"}</span></button>
-            </div>
-          </article>
-        ) : section === "home" && (
-          <div className="content-wrap">
-            <section className="intro">
-              <p className="eyebrow">17-NOYABR, 2026 <span>—</span> BUGUNGI TANLOV</p>
-              <h1>Fikrlar dunyoni<br /><em>boshqacha</em> ko‘rsatadi.</h1>
-              <p className="intro-copy">Shoshilmasdan o‘qish, chuqurroq o‘ylash va o‘z qarashingni shakllantirish uchun makon.</p>
-              <div className="intro-rule"><span>01</span><span className="rule-line" /><span>MUHARRIR TANLOVI</span></div>
-            </section>
-
-            <section className="feed-section">
-              <div className="section-heading">
-                <div><p className="eyebrow">SARALANGAN FIKRLAR</p><h2>Bugun o‘qish uchun</h2></div>
-                <button className="text-button" onClick={() => setSection("shorts")}>Barchasi <span>↗</span></button>
-              </div>
-              <div className="post-list">
-                {filteredPosts.map((post, index) => (
-                  <article className="post-card" key={post.id}>
-                    <div className="post-index">{String(index + 1).padStart(2, "0")}</div>
-                    <div className="post-body">
-                      <div className="post-meta"><span>{post.category}</span><i />{post.time}</div>
-                      <button className="post-title-button" onClick={() => setSelectedPost(post)}><h3>{post.title}</h3></button>
-                      <button className="post-open-button" onClick={() => setSelectedPost(post)}><p className="post-excerpt">{post.excerpt}</p><span>Fikrni o‘qish <span aria-hidden="true">↗</span></span></button>
-                      <div className="post-footer">
-                        <div className="author"><span className="avatar">{post.initials}</span><span>{post.author}</span><span className="meta-divider">·</span><span className="read-time">{post.read}</span></div>
-                        <div className="post-actions">
-                          <button className={liked.includes(post.id) ? "action active" : "action"} onClick={() => toggleLiked(post.id)} aria-label="Yoqtirish"><Heart size={17} /><span>{post.likes + (liked.includes(post.id) ? 1 : 0)}</span></button>
-                          <button className="action" aria-label="Izohlar"><MessageCircle size={17} /><span>{post.comments}</span></button>
-                          <button className={saved.includes(post.id) ? "action active" : "action"} onClick={() => toggleSaved(post.id)} aria-label="Saqlash"><Bookmark size={17} /></button>
-                        </div>
-                      </div>
-                    </div>
-                    <button className="more-button" aria-label="Boshqa amallar"><MoreHorizontal size={19} /></button>
-                  </article>
-                ))}
-                {filteredPosts.length === 0 && <p className="empty-state">Bu so‘rov bo‘yicha fikr topilmadi.</p>}
-              </div>
-            </section>
-          </div>
-        )}
-
-        {section === "shorts" && (
-          <div className="shorts-page">
-            <div className="shorts-heading"><div><p className="eyebrow">FIKRNI QISQA HIS ETING</p><h1>Kashf <em>etish.</em></h1></div><span className="shorts-counter">{String(shortIndex + 1).padStart(2, "0")} <i /> {String(shortThoughts.length).padStart(2, "0")}</span></div>
-            <div className="shorts-stage">
-              <article className={"short-card tone-" + shortThoughts[shortIndex].tone}>
-                <div className="short-card-top"><span>FIKRNOMA <b>·</b> {shortThoughts[shortIndex].category}</span><span>0{shortIndex + 1} / 0{shortThoughts.length}</span></div>
-                <div className="short-card-center"><span className="short-quote-mark">“</span><h2>{shortThoughts[shortIndex].quote}</h2><p>{shortThoughts[shortIndex].note}</p></div>
-                <div className="short-card-bottom"><span className="short-author"><i>{shortThoughts[shortIndex].initials}</i>{shortThoughts[shortIndex].author}</span><span className="short-wordmark">f.</span></div>
-              </article>
-              <div className="shorts-controls">
-                <button className="short-control" aria-label="Oldingi fikr" onClick={() => setShortIndex((i) => (i - 1 + shortThoughts.length) % shortThoughts.length)}><ArrowLeft size={17} /></button>
-                <button className={saved.includes(shortThoughts[shortIndex].id) ? "short-control active" : "short-control"} aria-label="Fikrni saqlash" onClick={() => toggleSaved(shortThoughts[shortIndex].id)}><Bookmark size={17} /></button>
-                <button className={liked.includes(shortThoughts[shortIndex].id) ? "short-control active" : "short-control"} aria-label="Fikrni yoqtirish" onClick={() => toggleLiked(shortThoughts[shortIndex].id)}><Heart size={17} /></button>
-                <button className="short-control next" aria-label="Keyingi fikr" onClick={() => setShortIndex((i) => (i + 1) % shortThoughts.length)}><ArrowLeft size={17} /></button>
-              </div>
-            </div>
-            <p className="shorts-footnote">Qisqa fikrlar — katta savollarga kichik eshiklar.</p>
-          </div>
-        )}
-
-        {section === "profile" && (
-          <div className="content-wrap profile-page">
-            <p className="eyebrow">SHAXSIY MAKON</p>
-            <section className="profile-identity">
-              <div className="profile-avatar">S</div>
-              <div className="profile-identity-copy"><h1>Sizning <em>makoningiz.</em></h1><p>Fikrlang, yozing va o‘zingiz uchun muhim g‘oyalarni jamlang.</p></div>
-              <span className="profile-edit-label">MEHMON PROFILI</span>
-            </section>
-            <div className="profile-stats">
-              <div><strong>{saved.length}</strong><span>Saqlangan</span></div>
-              <div><strong>{liked.length}</strong><span>Yoqtirilgan</span></div>
-              <div><strong>{posts.filter((post) => post.author === "Siz").length}</strong><span>Fikrlaringiz</span></div>
-            </div>
-            <div className="profile-tabs" role="tablist" aria-label="Profil materiallari">
-              <button className={profileTab === "mine" ? "selected" : ""} onClick={() => setProfileTab("mine")}>Fikrlarim</button>
-              <button className={profileTab === "saved" ? "selected" : ""} onClick={() => setProfileTab("saved")}>Saqlanganlar</button>
-              <button className={profileTab === "liked" ? "selected" : ""} onClick={() => setProfileTab("liked")}>Yoqtirganlar</button>
-            </div>
-            <div className="profile-post-list">
-              {(profileTab === "mine" ? posts.filter((post) => post.author === "Siz") : profileTab === "saved" ? posts.filter((post) => saved.includes(post.id)) : posts.filter((post) => liked.includes(post.id))).map((post) => (
-                <button className="profile-post-row" key={post.id} onClick={() => setSelectedPost(post)}>
-                  <span className="profile-post-category">{post.category}</span>
-                  <strong>{post.title}</strong>
-                  <span className="profile-post-excerpt">{post.excerpt}</span>
-                  <span className="profile-post-open">O‘QISH ↗</span>
-                </button>
-              ))}
-              {(profileTab === "mine" ? posts.filter((post) => post.author === "Siz") : profileTab === "saved" ? posts.filter((post) => saved.includes(post.id)) : posts.filter((post) => liked.includes(post.id))).length === 0 && (
-                <div className="profile-empty"><span>{profileTab === "mine" ? "✳" : profileTab === "saved" ? "⌑" : "♡"}</span><p>{profileTab === "mine" ? "Hali fikr ulashmagansiz." : profileTab === "saved" ? "Saqlangan fikrlaringiz shu yerda ko‘rinadi." : "Yoqtirgan fikrlaringiz shu yerda jamlanadi."}</p><button onClick={() => profileTab === "mine" ? setComposerOpen(true) : setSection("home")}>{profileTab === "mine" ? "Fikr yozish" : "Fikrlarni kashf etish"} ↗</button></div>
-              )}
-            </div>
-          </div>
-        )}
-      </main>
-
-      <aside className="right-column">
-        <div className="right-search"><Search size={16} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Fikrlarni izlash..." /></div>
-        <div className="right-block">
-          <p className="eyebrow">FIKRNOMA HAQIDA</p>
-          <p className="about-copy">Har bir katta o‘zgarish avval bir fikrdan boshlanadi.</p>
-          <span className="about-mark">f.</span>
-        </div>
-        <div className="right-bottom"><span>O‘YLA. ANGLA. ULASH.</span><span>© 2026 FIKRNOMA</span></div>
-      </aside>
-
-      <nav className="bottom-nav" aria-label="Asosiy navigatsiya">
-        <button className={section === "home" ? "nav-item selected" : "nav-item"} onClick={() => { setSelectedPost(null); setSection("home"); }} aria-label="Bosh sahifa"><Home size={21} strokeWidth={section === "home" ? 2.3 : 1.7} /></button>
-        <button className={section === "shorts" ? "nav-item selected" : "nav-item"} onClick={() => { setSelectedPost(null); setSection("shorts"); }} aria-label="Shorts"><Compass size={21} strokeWidth={section === "shorts" ? 2.3 : 1.7} /></button>
-        <button className={section === "profile" ? "nav-item selected" : "nav-item"} onClick={() => { setSelectedPost(null); setSection("profile"); }} aria-label="Profil"><UserRound size={21} strokeWidth={section === "profile" ? 2.3 : 1.7} /></button>
-      </nav>
-
-      {composerOpen && (
-        <div className="modal-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setComposerOpen(false); }}>
-          <section className="composer-modal" role="dialog" aria-modal="true" aria-labelledby="composer-title">
-            <div className="composer-heading">
-              <div><p className="eyebrow">FIKRNOMAGA QO‘SHING</p><h2 id="composer-title">Fikringizni ulashing.</h2></div>
-              <button className="close-button" aria-label="Yopish" onClick={() => setComposerOpen(false)}><X size={19} /></button>
-            </div>
-            <form onSubmit={publishThought}>
-              <label htmlFor="thought-category">Yo‘nalish</label>
-              <select id="thought-category" value={draftCategory} onChange={(event) => setDraftCategory(event.target.value)}>
-                <option value="TAFAKKUR">Tafakkur</option>
-                <option value="JAMIYAT">Jamiyat</option>
-                <option value="MADANIYAT">Madaniyat</option>
-                <option value="TEXNOLOGIYA">Texnologiya</option>
-                <option value="HAYOT">Hayot</option>
-              </select>
-              <label htmlFor="thought-title">Sarlavha</label>
-              <input id="thought-title" value={draftTitle} onChange={(event) => setDraftTitle(event.target.value)} placeholder="Fikringizni bir jumlada ifodalang..." maxLength={120} required />
-              <label htmlFor="thought-body">Fikr</label>
-              <textarea id="thought-body" value={draftBody} onChange={(event) => setDraftBody(event.target.value)} placeholder="Fikringizni batafsil yozing..." rows={6} required />
-              <div className="composer-footer"><span>Hozircha faqat ushbu ko‘rish sessiyasida saqlanadi.</span><button className="publish-button" type="submit">Ulashish <span>↗</span></button></div>
-            </form>
-          </section>
-        </div>
-      )}
-    </div>
-  );
+const shortItems = [
+ {category:"TAFAKKUR",quote:"Ko‘p narsani bilish — dono bo‘lish degani emas. Muhimi, bilganing haqida qanday fikrlashing.",tone:"sand"},
+ {category:"JAMIYAT",quote:"Shahar — xaritadagi ko‘chalar emas. U odamlar bir-biriga qanchalik yaqin yashashidir.",tone:"olive"},
+ {category:"HAYOT",quote:"Ba’zan oldinga yurish uchun tezlashish emas, nimaga shoshilayotganingni anglash kerak.",tone:"ink"},
+];
+const categories=["Barchasi","Hayot","Psixologiya","Biznes","Falsafa","Jamiyat","Tafakkur"];
+function App(){
+ const [section,setSection]=useState<Section>("home");
+ const [page,setPage]=useState<Page>("main");
+ const [posts,setPosts]=useState<Post[]>(initialPosts);
+ const [selected,setSelected]=useState<Post|null>(null);
+ const [saved,setSaved]=useState<number[]>([]);
+ const [liked,setLiked]=useState<number[]>([]);
+ const [query,setQuery]=useState("");
+ const [category,setCategory]=useState("Barchasi");
+ const [composer,setComposer]=useState(false);
+ const [title,setTitle]=useState("");
+ const [body,setBody]=useState("");
+ const [kind,setKind]=useState("TAFAKKUR");
+ const [shortIndex,setShortIndex]=useState(0);
+ const [profileTab,setProfileTab]=useState<"mine"|"saved"|"liked">("saved");
+ const [settingsTab,setSettingsTab]=useState("Til");
+ const toggle=(id:number,list:number[],setter:(v:number[])=>void)=>setter(list.includes(id)?list.filter(x=>x!==id):[...list,id]);
+ const filtered=useMemo(()=>posts.filter(p=>(category==="Barchasi"||p.category.toLowerCase()===category.toLowerCase())&&(!query||(p.title+" "+p.excerpt).toLowerCase().includes(query.toLowerCase()))),[posts,category,query]);
+ const publish=(e:FormEvent)=>{e.preventDefault();if(!title.trim()||!body.trim())return;const p:Post={id:Date.now(),category:kind,time:"Hozirgina",title:title.trim(),excerpt:body.trim().slice(0,150),content:body.trim(),author:"Siz",initials:"S",read:"1 daqiqa o‘qish",likes:0,comments:0,image:photos.books};setPosts(v=>[p,...v]);setTitle("");setBody("");setComposer(false);setSection("home");setPage("main");};
+ const openPost=(p:Post)=>{setSelected(p);setPage("main");};
+ const go=(s:Section)=>{setSection(s);setSelected(null);setPage("main");};
+ const savedPosts=posts.filter(p=>saved.includes(p.id));
+ const likedPosts=posts.filter(p=>liked.includes(p.id));
+ const mine=posts.filter(p=>p.author==="Siz");
+ return <div className="app-shell">
+  <header className="topbar">
+   <button className="wordmark" onClick={()=>{go("home");setPage("main");}}>fikrnoma<span>.</span></button>
+   <div className="top-actions"><button className="icon-btn" aria-label="Qidirish" onClick={()=>document.getElementById("main-search")?.focus()}><Search size={19}/></button><button className="icon-btn desktop-write" aria-label="Yangi fikr" onClick={()=>setComposer(true)}><Plus size={19}/></button></div>
+  </header>
+  <main className="main-area">
+   {page==="saved" ? <section className="page-wrap subpage"><button className="back-link" onClick={()=>setPage("main")}><ArrowLeft size={17}/> Orqaga</button><p className="eyebrow">SHAXSIY TO‘PLAM</p><h1>Saqlanganlar</h1><div className="segmented"><button className="active">Maqolalar</button><button onClick={()=>setProfileTab("saved")}>To‘plamlar</button></div>{savedPosts.length?savedPosts.map(p=><PostRow key={p.id} post={p} onOpen={()=>openPost(p)}/>):<Empty icon="bookmark" title="Hozcha saqlanganlar yo‘q" text="Qiziqarli maqolalarni saqlab, keyin o‘qishingiz mumkin." action="Kashf etish" onAction={()=>go("shorts")}/>}</section>
+   :page==="settings"?<section className="page-wrap subpage"><button className="back-link" onClick={()=>setPage("main")}><ArrowLeft size={17}/> Orqaga</button><p className="eyebrow">ILOVA</p><h1>Sozlamalar</h1><div className="settings-list">{[{name:"Bildirishnomalar",icon:Bell,desc:"Yangiliklar va eslatmalar"},{name:"Til",icon:Globe,desc:"O‘zbekcha"},{name:"Mavzuni o‘zgartirish",icon:Sun,desc:"Tizim bo‘yicha"},{name:"Yordam",icon:CircleHelp,desc:"Savollar va javoblar"},{name:"Biz bilan bog‘lanish",icon:Info,desc:"Fikr va takliflar"},{name:"Ilova haqida",icon:Info,desc:"Fikrnoma haqida"}].map(item=><button className="settings-row" key={item.name} onClick={()=>setSettingsTab(item.name)}><item.icon size={19}/><span><strong>{item.name}</strong><small>{item.desc}</small></span><ChevronRight size={17}/></button>)}</div><button className="logout-btn"><LogOut size={17}/> Chiqish</button></section>
+   :selected?<article className="article-view"><button className="back-link" onClick={()=>setSelected(null)}><ArrowLeft size={17}/> Orqaga</button><img className="article-cover" src={selected.image} alt="Maqola muqovasi"/><div className="article-body"><span className="category-pill">{selected.category}</span><h1>{selected.title}</h1><div className="byline"><span className="avatar">{selected.initials}</span><span><b>{selected.author}</b><small>{selected.time}</small></span></div><div className="article-copy">{selected.content.split(/\n\n+/).map((para,i)=><p key={i}>{para}</p>)}</div><div className="article-actions"><button className={liked.includes(selected.id)?"active":""} onClick={()=>toggle(selected.id,liked,setLiked)}><Heart size={19}/> {selected.likes+(liked.includes(selected.id)?1:0)}</button><button className={saved.includes(selected.id)?"active":""} onClick={()=>toggle(selected.id,saved,setSaved)}><Bookmark size={19}/> {saved.includes(selected.id)?"Saqlandi":"Saqlash"}</button></div></div></article>
+   :section==="home"?<div className="page-wrap home-page">
+    <section className="featured">
+     <div className="featured-heading"><p className="eyebrow">BUGUNGI TANLOV</p><span className="date-label">17 NOYABR</span></div>
+     <button className="featured-card" onClick={()=>openPost(posts[0])}><img src={photos.city} alt="Shahar manzarasi"/><span className="image-shade"/><span className="category-pill light">TAFAKKUR</span><span className="featured-copy"><strong>Ba’zan to‘g‘ri<br/>savol — javobdan<br/>muhimroq.</strong><small>◷ 3 daqiqa o‘qish</small></span></button>
+     <div className="carousel-dots"><i className="active"/><i/><i/></div>
+    </section>
+    <section className="today-section"><div className="section-title"><h2>Bugungi fikrlar</h2><button onClick={()=>go("shorts")}>Barchasini ko‘rish <ChevronRight size={15}/></button></div><div className="thought-list">{posts.slice(1).map(p=><PostRow key={p.id} post={p} onOpen={()=>openPost(p)}/>)}</div></section>
+    <section className="quote-banner"><span>F.</span><p>Har bir yangi fikr — dunyoga boshqa nigoh.</p></section>
+   </div>
+   :section==="shorts"?<div className="page-wrap discover-page"><div className="discover-head"><h1>Kashf etish</h1><button className="filter-btn" aria-label="Filtr"><SlidersHorizontal size={18}/></button></div><label className="search-field"><Search size={16}/><input id="main-search" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Mavzu yoki muallif..."/></label><div className="category-scroll">{categories.map(c=><button key={c} className={category===c?"chosen":""} onClick={()=>setCategory(c)}>{c}</button>)}</div><div className="discover-list">{filtered.map(p=><PostRow key={p.id} post={p} onOpen={()=>openPost(p)}/>)}{filtered.length===0&&<p className="no-results">Bu mavzuda hozircha fikr topilmadi.</p>}</div><div className="shorts-feature"><div className="shorts-feature-top"><span>FIKRNI QISQA HIS ETING</span><span>{shortIndex+1} / {shortItems.length}</span></div><p>“{shortItems[shortIndex].quote}”</p><div className="shorts-feature-bottom"><span>{shortItems[shortIndex].category}</span><div><button onClick={()=>setShortIndex(i=>(i+shortItems.length-1)%shortItems.length)}><ArrowLeft size={16}/></button><button onClick={()=>setShortIndex(i=>(i+1)%shortItems.length)}><ChevronRight size={16}/></button></div></div></div></div>
+   :<div className="page-wrap profile-page"><div className="profile-top"><div className="profile-avatar">B</div><div className="profile-info"><h1>Bekzod</h1><p>@bekzodmh</p></div><button className="settings-trigger" onClick={()=>setPage("settings")} aria-label="Sozlamalar"><Settings size={20}/></button></div><div className="profile-stats"><div><b>{mine.length}</b><span>Fikrlar</span></div><div><b>{liked.length}</b><span>Sevimlilar</span></div><div><b>1.2K</b><span>Obunachilar</span></div></div><button className="reading-streak"><span>▥</span><span><b>O‘qish odatingiz</b><small>Bu oyda 12 maqola</small></span><ChevronRight size={17}/></button><div className="section-title profile-section-title"><h2>{profileTab==="saved"?"Mening saqlanganlarim":profileTab==="liked"?"Yoqtirganlarim":"Mening fikrlarim"}</h2><button onClick={()=>setPage("saved")}>Barchasini ko‘rish <ChevronRight size={15}/></button></div><div className="profile-tabs"><button className={profileTab==="saved"?"active":""} onClick={()=>setProfileTab("saved")}>Saqlanganlar</button><button className={profileTab==="liked"?"active":""} onClick={()=>setProfileTab("liked")}>Yoqtirganlar</button><button className={profileTab==="mine"?"active":""} onClick={()=>setProfileTab("mine")}>Fikrlarim</button></div><div className="thought-list">{(profileTab==="saved"?savedPosts:profileTab==="liked"?likedPosts:mine).slice(0,3).map(p=><PostRow key={p.id} post={p} onOpen={()=>openPost(p)}/>)}{(profileTab==="saved"?savedPosts:profileTab==="liked"?likedPosts:mine).length===0&&<Empty icon="bookmark" title="Hozcha saqlanganlar yo‘q" text="Qiziqarli maqolalarni saqlab, keyin o‘qishingiz mumkin." action="Kashf etish" onAction={()=>go("shorts")}/>}</div><button className="settings-link" onClick={()=>setPage("settings")}><Settings size={17}/> Sozlamalar <ChevronRight size={17}/></button></div>}
+  </main>
+  <nav className="bottom-nav"><button className={section==="home"&&page==="main"?"active":""} onClick={()=>go("home")}><Home size={20}/><span>Bosh sahifa</span></button><button className={section==="shorts"&&page==="main"?"active":""} onClick={()=>go("shorts")}><Compass size={20}/><span>Kashf etish</span></button><button className={section==="profile"&&page==="main"?"active":""} onClick={()=>go("profile")}><UserRound size={20}/><span>Profil</span></button></nav>
+  <button className="floating-write" onClick={()=>setComposer(true)} aria-label="Fikr yozish"><Plus size={22}/></button>
+  {composer&&<div className="modal-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)setComposer(false)}}><form className="composer-modal" onSubmit={publish}><div className="modal-head"><div><p className="eyebrow">FIKRNOMAGA QO‘SHING</p><h2>Fikringizni ulashing.</h2></div><button type="button" onClick={()=>setComposer(false)}><X size={19}/></button></div><label>Yo‘nalish</label><select value={kind} onChange={e=>setKind(e.target.value)}><option>TAFAKKUR</option><option>HAYOT</option><option>JAMIYAT</option><option>FALSAFA</option><option>PSIXOLOGIYA</option></select><label>Sarlavha</label><input value={title} onChange={e=>setTitle(e.target.value)} maxLength={120} placeholder="Fikringizni bir jumlada ifodalang..." required/><label>Fikr</label><textarea value={body} onChange={e=>setBody(e.target.value)} rows={6} placeholder="Fikringizni batafsil yozing..." required/><button className="publish-btn" type="submit">Ulashish <ChevronRight size={17}/></button><small className="session-note">Hozircha faqat ushbu sessiyada saqlanadi.</small></form></div>}
+ </div>;
 }
-
+function PostRow({post,onOpen}:{post:Post;onOpen:()=>void}){return <button className="post-row" onClick={onOpen}><img src={post.image} alt=""/><span className="post-row-copy"><small>{post.category}</small><strong>{post.title}</strong><em>◷ {post.time}</em></span><Bookmark size={16} className="row-bookmark"/></button>}
+function Empty({icon,title,text,action,onAction}:{icon:string;title:string;text:string;action:string;onAction:()=>void}){return <div className="empty-state"><div className="empty-icon">{icon==="bookmark"?<Bookmark size={35}/>:<UserRound size={35}/>}</div><h3>{title}</h3><p>{text}</p><button onClick={onAction}>{action}</button></div>}
 export default App;
