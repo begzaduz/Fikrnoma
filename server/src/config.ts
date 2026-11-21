@@ -7,6 +7,8 @@ export type Config = {
   devAuth: boolean;
   seed: boolean;
   adminIds: number[];
+  /** true bo‘lsa har bir foydalanuvchi fikr yoza oladi; aks holda faqat admin (Fikrnoma). */
+  openWriting: boolean;
   production: boolean;
   cloudinaryCloudName: string;
   cloudinaryApiKey: string;
@@ -27,6 +29,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
       .split(",")
       .map((s) => Number(s.trim()))
       .filter((n) => Number.isInteger(n) && n > 0),
+    openWriting: env.OPEN_WRITING === "true",
     production,
     cloudinaryCloudName: env.CLOUDINARY_CLOUD_NAME || "",
     cloudinaryApiKey: env.CLOUDINARY_API_KEY || "",

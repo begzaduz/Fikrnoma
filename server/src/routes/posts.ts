@@ -21,7 +21,7 @@ const listQuery = z.object({
   cursor: z.coerce.number().int().positive().optional(),
 });
 
-export function postRoutes(app: FastifyInstance, { db }: Ctx) {
+export function postRoutes(app: FastifyInstance, { db, config }: Ctx) {
   const { requireAuth, optionalAuth } = makeAuth(db);
   const viewer = (req: { me?: { id: number } }) => req.me?.id ?? 0;
 
@@ -70,6 +70,7 @@ export function postRoutes(app: FastifyInstance, { db }: Ctx) {
   });
 
   app.post("/api/posts", { preHandler: requireAuth }, async (req, reply) => {
+    if (!config.openWriting && req.me!.role !== "admin") throw forbidden("Hozircha fikrlarni faqat Fikrnoma yozadi");
     const b = postInput.parse(req.body);
     const info = db
       .prepare("INSERT INTO posts (author_id, category, title, excerpt, content, image_url, read_minutes) VALUES (?,?,?,?,?,?,?)")

@@ -13,6 +13,7 @@ import { meRoutes } from "./routes/me.js";
 import { userRoutes } from "./routes/users.js";
 import { shortsRoutes } from "./routes/shorts.js";
 import { mediaRoutes } from "./routes/media.js";
+import { dailyRoutes } from "./routes/daily.js";
 
 export type Ctx = { db: Db; config: Config };
 
@@ -44,6 +45,7 @@ export async function buildApp(ctx: Ctx, opts: { logger?: boolean } = {}) {
   userRoutes(app, ctx);
   shortsRoutes(app, ctx);
   mediaRoutes(app, ctx);
+  dailyRoutes(app, ctx);
 
   return app;
 }

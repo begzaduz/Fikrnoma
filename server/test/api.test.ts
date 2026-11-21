@@ -8,7 +8,7 @@ import { seedIfEmpty } from "../src/seed.js";
 import { verifyInitData } from "../src/lib/telegram.js";
 
 const BOT = "123456:TEST-TOKEN";
-const config = { ...loadConfig({} as NodeJS.ProcessEnv), devAuth: true, botToken: BOT, dbPath: ":memory:" };
+const config = { ...loadConfig({} as NodeJS.ProcessEnv), devAuth: true, adminIds: [1001], botToken: BOT, dbPath: ":memory:" };
 const db = openDb(":memory:");
 seedIfEmpty(db);
 const app = await buildApp({ db, config });
@@ -173,4 +173,46 @@ test("media upload autentifikatsiya va storage konfiguratsiyasi bilan himoyalang
   });
   assert.equal(noStorage.statusCode, 503);
   assert.match(noStorage.json().error, /sozlanmagan/);
+});
+
+test("oddiy foydalanuvchi fikr yoza olmaydi, faqat admin", async () => {
+  const user = await login(2001, "Oddiy");
+  const r = await app.inject({ method: "POST", url: "/api/posts", headers: user, payload: { category: "hayot", title: "Sarlavha", content: "Yetarlicha uzun matn yoziladi." } });
+  assert.equal(r.statusCode, 403);
+});
+
+test("kunlik 5 savol: javob, streak, daraja va maxfiylik", async () => {
+  const h = await login(2002, "Savolchi");
+  assert.equal((await app.inject({ method: "GET", url: "/api/daily" })).statusCode, 401);
+
+  const s0 = (await app.inject({ method: "GET", url: "/api/daily", headers: h })).json();
+  assert.equal(s0.questions.length, 5);
+  assert.equal(s0.done, 0);
+  assert.equal(s0.streak, 0);
+  assert.equal(s0.level.name, "Kuzatuvchi");
+
+  assert.equal((await app.inject({ method: "POST", url: "/api/daily/answer", headers: h, payload: { index: 7, body: "x" } })).statusCode, 400);
+  assert.equal((await app.inject({ method: "POST", url: "/api/daily/answer", headers: h, payload: { index: 0, body: "   " } })).statusCode, 400);
+
+  const a = await app.inject({ method: "POST", url: "/api/daily/answer", headers: h, payload: { index: 0, body: "Bugun sukunat haqida o‘yladim." } });
+  assert.equal(a.statusCode, 200);
+  const s1 = a.json();
+  assert.equal(s1.done, 1);
+  assert.equal(s1.streak, 1);
+  assert.equal(s1.points, 10);
+  assert.equal(s1.questions[0].answer, "Bugun sukunat haqida o‘yladim.");
+
+  // Qayta yozilsa, yangilanadi (takrorlanmaydi)
+  const again = (await app.inject({ method: "POST", url: "/api/daily/answer", headers: h, payload: { index: 0, body: "Yangilangan javob" } })).json();
+  assert.equal(again.done, 1);
+  assert.equal(again.questions[0].answer, "Yangilangan javob");
+
+  // Javoblar boshqa foydalanuvchiga ko‘rinmaydi
+  const other = await login(2003, "Boshqa");
+  const so = (await app.inject({ method: "GET", url: "/api/daily", headers: other })).json();
+  assert.equal(so.done, 0);
+  assert.equal(so.questions[0].answer, null);
+
+  const hist = (await app.inject({ method: "GET", url: "/api/me/answers", headers: h })).json();
+  assert.equal(hist.items.length, 1);
 });

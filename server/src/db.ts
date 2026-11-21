@@ -85,5 +85,14 @@ function migrate(db: Db) {
     tone TEXT NOT NULL DEFAULT 'sand',
     position INTEGER NOT NULL DEFAULT 0
   );
+  CREATE TABLE IF NOT EXISTS daily_answers (
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    day TEXT NOT NULL,
+    idx INTEGER NOT NULL CHECK (idx BETWEEN 0 AND 4),
+    question TEXT NOT NULL,
+    body TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT ${NOW},
+    PRIMARY KEY (user_id, day, idx)
+  );
   `);
 }
