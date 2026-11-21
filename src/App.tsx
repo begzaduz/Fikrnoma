@@ -3,8 +3,10 @@ import { Plus } from "lucide-react";
 import { fetchPost, setReaction, type Post } from "./api";
 import { BottomNav } from "./components/BottomNav";
 import { Composer } from "./components/Composer";
+import { DailyCard } from "./components/DailyCard";
 import { TopBar } from "./components/TopBar";
 import { useBootstrap } from "./hooks/useBootstrap";
+import { useDaily } from "./hooks/useDaily";
 import { useFlash } from "./hooks/useFlash";
 import { useProfileData, useSavedItems } from "./hooks/useProfileData";
 import { ArticleView } from "./pages/ArticleView";
@@ -30,6 +32,8 @@ function App() {
   const { posts, setPosts, featured, setFeatured, shortItems, me } = useBootstrap(flash);
   const { stats, items: profileItems } = useProfileData(section === "profile" && page === "main", me, profileTab, refreshKey);
   const savedItems = useSavedItems(page === "saved", me, refreshKey);
+  const { daily, setDaily, answers } = useDaily(me);
+  const canWrite = !!me?.canWrite;
 
   /** Bitta fikrni barcha joylarda (ro‘yxat, ochiq maqola, bugungi tanlov) yangilaydi. */
   const patchPost = (id: number, patch: Partial<Post>) => {
@@ -108,7 +112,9 @@ function App() {
     ) : selected ? (
       <ArticleView post={selected} onBack={() => setSelected(null)} onReact={react} />
     ) : section === "home" ? (
-      <HomePage featured={featured} posts={posts} onOpen={openPost} onSeeAll={() => go("shorts")} />
+      <HomePage featured={featured} posts={posts} onOpen={openPost} onSeeAll={() => go("shorts")}
+        dailyCard={<DailyCard daily={daily} signedIn={!!me} onChange={setDaily} flash={flash} />}
+      />
     ) : section === "shorts" ? (
       <DiscoverPage
         posts={posts}
@@ -130,6 +136,9 @@ function App() {
         onOpenSaved={() => setPage("saved")}
         onOpenSettings={() => setPage("settings")}
         onDiscover={() => go("shorts")}
+        daily={daily}
+        answers={answers}
+        canWrite={canWrite}
       />
     );
 
@@ -138,13 +147,15 @@ function App() {
       <TopBar
         onHome={() => go("home")}
         onSearch={() => document.getElementById("main-search")?.focus()}
-        onWrite={() => setComposerOpen(true)}
+        onWrite={canWrite ? () => setComposerOpen(true) : undefined}
       />
       <main className="main-area">{content}</main>
       <BottomNav section={section} page={page} go={navigate} />
-      <button className="floating-write" onClick={() => setComposerOpen(true)} aria-label="Fikr yozish">
-        <Plus size={22} />
-      </button>
+      {canWrite && (
+        <button className="floating-write" onClick={() => setComposerOpen(true)} aria-label="Fikr yozish">
+          <Plus size={22} />
+        </button>
+      )}
       <Composer open={composerOpen} me={me} flash={flash} onClose={() => setComposerOpen(false)} onPublished={onPublished} />
       {notice && (
         <div className="toast" role="status">

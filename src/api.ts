@@ -113,8 +113,8 @@ export type Post = {
   saved: boolean;
 };
 export type Short = { id: number; category: string; quote: string; tone: string };
-export type Me = { id: number; name: string; initials: string; username: string | null; role: string };
-export type Stats = { posts: number; liked: number; saved: number; followers: number; following: number; readsThisMonth: number };
+export type Me = { id: number; name: string; initials: string; username: string | null; role: string; canWrite: boolean };
+export type Stats = { answers: number; posts: number; liked: number; saved: number; followers: number; following: number; readsThisMonth: number };
 
 export function toPost(p: ApiPost): Post {
   const read = `${p.readMinutes} daqiqa o‘qish`;
@@ -162,3 +162,17 @@ export async function uploadImage(file: File): Promise<string> {
 }
 export const setReaction = (id: number, kind: "like" | "save", on: boolean) =>
   request<{ likes?: number }>(on ? "PUT" : "DELETE", `/api/posts/${id}/${kind}`);
+
+/* ---------- Kunlik 5 savol (javoblar faqat foydalanuvchining o‘ziga ko‘rinadi) ---------- */
+export type DailyState = {
+  day: string;
+  questions: Array<{ index: number; text: string; answer: string | null }>;
+  done: number;
+  streak: number;
+  points: number;
+  level: { name: string; lo: number; hi: number };
+};
+export type MyAnswer = { day: string; idx: number; question: string; body: string };
+export const fetchDaily = () => request<DailyState>("GET", "/api/daily");
+export const saveAnswer = (index: number, body: string) => request<DailyState>("POST", "/api/daily/answer", { index, body });
+export const fetchAnswers = async () => (await request<{ items: MyAnswer[] }>("GET", "/api/me/answers?limit=20")).items;

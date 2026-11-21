@@ -1,6 +1,6 @@
 import { Plus, Search } from "lucide-react";
 
-type TopBarProps = { onHome: () => void; onSearch: () => void; onWrite: () => void };
+type TopBarProps = { onHome: () => void; onSearch: () => void; onWrite?: () => void };
 
 export function TopBar({ onHome, onSearch, onWrite }: TopBarProps) {
   return (
@@ -12,9 +12,11 @@ export function TopBar({ onHome, onSearch, onWrite }: TopBarProps) {
         <button className="icon-btn" aria-label="Qidirish" onClick={onSearch}>
           <Search size={19} />
         </button>
-        <button className="icon-btn desktop-write" aria-label="Yangi fikr" onClick={onWrite}>
-          <Plus size={19} />
-        </button>
+        {onWrite && (
+          <button className="icon-btn desktop-write" aria-label="Yangi fikr" onClick={onWrite}>
+            <Plus size={19} />
+          </button>
+        )}
       </div>
     </header>
   );

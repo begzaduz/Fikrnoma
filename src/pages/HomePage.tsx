@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { ChevronRight } from "lucide-react";
 import type { Post } from "../api";
 import { PostRow } from "../components/PostRow";
@@ -8,11 +9,13 @@ type HomePageProps = {
   posts: Post[];
   onOpen: (post: Post) => void;
   onSeeAll: () => void;
+  dailyCard?: ReactNode;
 };
 
-export function HomePage({ featured, posts, onOpen, onSeeAll }: HomePageProps) {
+export function HomePage({ featured, posts, onOpen, onSeeAll, dailyCard }: HomePageProps) {
   return (
     <div className="page-wrap home-page">
+      {dailyCard}
       <section className="featured">
         <div className="featured-heading">
           <p className="eyebrow">BUGUNGI TANLOV</p>

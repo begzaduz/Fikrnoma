@@ -3,17 +3,19 @@
   --safe-top: calc(
     max(env(safe-area-inset-top, 0px), var(--tg-safe-area-inset-top, 0px)) + var(--tg-content-safe-area-inset-top, 0px)
   );
-  font-family: "DM Sans", sans-serif;
-  color: #242420;
-  background: #f6f5f2;
+  font-family: Inter, system-ui, sans-serif;
+  color: #211c17;
+  background: #f8f2e6;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  --paper: #f6f5f2;
-  --ink: #242420;
-  --muted: #92918b;
-  --line: #e7e5df;
-  --soft: #eeede8;
+  --paper: #f3ecdd;
+  --ink: #211c17;
+  --muted: #6b5f52;
+  --line: #d9cdb5;
+  --soft: #e8dec9;
+  --accent: #a2461f;
+  --sage: #5f6f55;
 }
 * {
   box-sizing: border-box;
@@ -43,7 +45,7 @@ button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  outline: 2px solid #aaa28d;
+  outline: 2px solid #6b5f52;
   outline-offset: 3px;
 }
 .app-shell {
@@ -65,12 +67,12 @@ select:focus-visible {
   border: 0;
   background: none;
   font:
-    800 24px/0.9 "Manrope",
+    800 24px/0.9 "Playfair Display", Georgia, serif,
     sans-serif;
   letter-spacing: -1.4px;
 }
 .wordmark span {
-  color: #a9a18d;
+  color: #6b5f52;
 }
 .top-actions {
   display: flex;
@@ -85,11 +87,11 @@ select:focus-visible {
   border: 0;
   border-radius: 50%;
   background: transparent;
-  color: #55564f;
+  color: #4a4036;
 }
 .icon-btn:hover,
 .settings-trigger:hover {
-  background: #ebe9e3;
+  background: #f3ecdd;
 }
 .main-area {
   max-width: 1120px;
@@ -113,14 +115,14 @@ select:focus-visible {
 }
 .eyebrow {
   margin: 0;
-  color: #8e8d85;
+  color: #6b5f52;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.14em;
 }
 .date-label {
   font-size: 9px;
-  color: #a09f98;
+  color: #6b5f52;
   letter-spacing: 0.08em;
 }
 .featured-card {
@@ -132,7 +134,7 @@ select:focus-visible {
   overflow: hidden;
   border: 0;
   border-radius: 18px;
-  background: #333;
+  background: #211c17;
   text-align: left;
   color: white;
   box-shadow: 0 8px 22px #29251c16;
@@ -157,8 +159,8 @@ select:focus-visible {
   align-items: center;
   padding: 6px 10px;
   border-radius: 20px;
-  background: #eeece5;
-  color: #56554e;
+  background: #f3ecdd;
+  color: #4a4036;
   font-size: 8px;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -167,8 +169,8 @@ select:focus-visible {
   position: absolute;
   top: 18px;
   left: 18px;
-  background: #f6f4ee;
-  color: #37372f;
+  background: #f8f2e6;
+  color: #211c17;
 }
 .featured-copy {
   position: absolute;
@@ -181,13 +183,13 @@ select:focus-visible {
 }
 .featured-copy strong {
   font:
-    700 clamp(26px, 5vw, 37px)/1.13 "Manrope",
+    700 clamp(26px, 5vw, 37px)/1.13 "Playfair Display", Georgia, serif,
     sans-serif;
   letter-spacing: -1.4px;
 }
 .featured-copy small {
   font-size: 10px;
-  color: #e1e0d9;
+  color: #e8dec9;
 }
 .carousel-dots {
   display: flex;
@@ -199,12 +201,12 @@ select:focus-visible {
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: #d6d3ca;
+  background: #d9cdb5;
 }
 .carousel-dots i.active {
   width: 16px;
   border-radius: 5px;
-  background: #77766e;
+  background: #6b5f52;
 }
 .today-section {
   padding: 23px 0 8px;
@@ -219,7 +221,7 @@ select:focus-visible {
 .section-title h2 {
   margin: 0;
   font:
-    700 19px "Manrope",
+    700 19px "Playfair Display", Georgia, serif,
     sans-serif;
   letter-spacing: -0.6px;
 }
@@ -230,7 +232,7 @@ select:focus-visible {
   padding: 4px 0;
   border: 0;
   background: none;
-  color: #77766f;
+  color: #6b5f52;
   font-size: 9px;
   white-space: nowrap;
 }
@@ -256,7 +258,7 @@ select:focus-visible {
   flex: 0 0 72px;
   object-fit: cover;
   border-radius: 12px;
-  background: #e4e1d8;
+  background: #e8dec9;
 }
 .post-row-copy {
   min-width: 0;
@@ -266,25 +268,25 @@ select:focus-visible {
   gap: 5px;
 }
 .post-row-copy small {
-  color: #96948a;
+  color: #6b5f52;
   font-size: 8px;
   font-weight: 700;
   letter-spacing: 0.1em;
 }
 .post-row-copy strong {
   font:
-    650 13px/1.35 "Manrope",
+    650 13px/1.35 "Playfair Display", Georgia, serif,
     sans-serif;
   letter-spacing: -0.2px;
 }
 .post-row-copy em {
   font-style: normal;
-  color: #99978f;
+  color: #6b5f52;
   font-size: 9px;
 }
 .row-bookmark {
   flex: 0 0 auto;
-  color: #77766e;
+  color: #6b5f52;
 }
 .quote-banner {
   display: flex;
@@ -293,7 +295,7 @@ select:focus-visible {
   margin: 24px 0 35px;
   padding: 16px 18px;
   border-radius: 14px;
-  background: #eeece5;
+  background: #f3ecdd;
 }
 .quote-banner > span {
   width: 30px;
@@ -301,15 +303,15 @@ select:focus-visible {
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #242420;
-  color: #f6f5f2;
-  font: 800 15px "Manrope";
+  background: #211c17;
+  color: #f8f2e6;
+  font: 800 15px "Playfair Display", Georgia, serif;
 }
 .quote-banner p {
   margin: 0;
-  color: #626159;
+  color: #4a4036;
   font:
-    500 12px/1.5 "Manrope",
+    500 12px/1.5 "Playfair Display", Georgia, serif,
     sans-serif;
 }
 .bottom-nav {
@@ -325,7 +327,7 @@ select:focus-visible {
   justify-content: center;
   gap: min(18vw, 120px);
   background: #f8f7f4ed;
-  border-top: 1px solid #e9e7e1;
+  border-top: 1px solid #f3ecdd;
   backdrop-filter: blur(18px);
 }
 .bottom-nav button {
@@ -338,13 +340,13 @@ select:focus-visible {
   padding: 4px 8px;
   border: 0;
   background: transparent;
-  color: #898880;
+  color: #6b5f52;
 }
 .bottom-nav button span {
   font-size: 8px;
 }
 .bottom-nav button.active {
-  color: #242420;
+  color: #211c17;
 }
 .bottom-nav button.active svg {
   stroke-width: 2.5;
@@ -360,7 +362,7 @@ select:focus-visible {
   place-items: center;
   border: 0;
   border-radius: 50%;
-  background: #242420;
+  background: #211c17;
   color: white;
   box-shadow: 0 5px 18px #0002;
 }
@@ -376,7 +378,7 @@ select:focus-visible {
 .subpage h1 {
   margin: 0;
   font:
-    750 27px "Manrope",
+    750 27px "Playfair Display", Georgia, serif,
     sans-serif;
   letter-spacing: -1px;
 }
@@ -396,10 +398,10 @@ select:focus-visible {
   gap: 9px;
   margin: 15px 0 13px;
   padding: 0 13px;
-  border: 1px solid #e7e5df;
+  border: 1px solid #e8dec9;
   border-radius: 12px;
-  background: #efeee9;
-  color: #99978e;
+  background: #f3ecdd;
+  color: #6b5f52;
 }
 .search-field input {
   width: 100%;
@@ -422,15 +424,15 @@ select:focus-visible {
 .category-scroll button {
   flex: 0 0 auto;
   padding: 7px 12px;
-  border: 1px solid #e7e5df;
+  border: 1px solid #e8dec9;
   border-radius: 18px;
   background: transparent;
-  color: #77766f;
+  color: #6b5f52;
   font-size: 9px;
 }
 .category-scroll button.chosen {
-  border-color: #242420;
-  background: #242420;
+  border-color: #211c17;
+  background: #211c17;
   color: #fff;
 }
 .discover-list .post-row {
@@ -440,15 +442,15 @@ select:focus-visible {
   margin: 20px 0 28px;
   padding: 19px;
   border-radius: 16px;
-  background: #e8e4d9;
-  color: #33332d;
+  background: #e8dec9;
+  color: #211c17;
 }
 .shorts-feature-top,
 .shorts-feature-bottom {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: #77766d;
+  color: #6b5f52;
   font-size: 8px;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -456,7 +458,7 @@ select:focus-visible {
 .shorts-feature p {
   margin: 24px 0;
   font:
-    650 20px/1.35 "Manrope",
+    650 20px/1.35 "Playfair Display", Georgia, serif,
     sans-serif;
   letter-spacing: -0.5px;
 }
@@ -469,13 +471,13 @@ select:focus-visible {
   height: 30px;
   display: grid;
   place-items: center;
-  border: 1px solid #d0cbbf;
+  border: 1px solid #d9cdb5;
   border-radius: 50%;
   background: transparent;
 }
 .no-results {
   padding: 30px 0;
-  color: #89877e;
+  color: #6b5f52;
   font-size: 12px;
 }
 .profile-page {
@@ -492,7 +494,7 @@ select:focus-visible {
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #242420;
+  background: #211c17;
   color: #fff;
   font:
     500 25px Georgia,
@@ -504,12 +506,12 @@ select:focus-visible {
 .profile-info h1 {
   margin: 0 0 4px;
   font:
-    700 19px "Manrope",
+    700 19px "Playfair Display", Georgia, serif,
     sans-serif;
 }
 .profile-info p {
   margin: 0;
-  color: #89877f;
+  color: #6b5f52;
   font-size: 10px;
 }
 .settings-trigger {
@@ -529,11 +531,11 @@ select:focus-visible {
 }
 .profile-stats b {
   font:
-    750 20px "Manrope",
+    750 20px "Playfair Display", Georgia, serif,
     sans-serif;
 }
 .profile-stats span {
-  color: #89877f;
+  color: #6b5f52;
   font-size: 9px;
 }
 .reading-streak {
@@ -545,8 +547,8 @@ select:focus-visible {
   padding: 13px 14px;
   border: 0;
   border-radius: 12px;
-  background: #252520;
-  color: #f7f6f1;
+  background: #211c17;
+  color: #f8f2e6;
   text-align: left;
 }
 .reading-streak > span:first-child {
@@ -564,10 +566,10 @@ select:focus-visible {
 }
 .reading-streak small {
   font-size: 9px;
-  color: #c5c3b9;
+  color: #d9cdb5;
 }
 .reading-streak > svg {
-  color: #c5c3b9;
+  color: #d9cdb5;
 }
 .profile-section-title {
   margin-bottom: 10px;
@@ -584,13 +586,13 @@ select:focus-visible {
   border: 1px solid var(--line);
   border-radius: 18px;
   background: transparent;
-  color: #77766e;
+  color: #6b5f52;
   font-size: 9px;
 }
 .profile-tabs button.active,
 .segmented button.active {
-  background: #242420;
-  border-color: #242420;
+  background: #211c17;
+  border-color: #211c17;
   color: white;
 }
 .settings-link {
@@ -603,7 +605,7 @@ select:focus-visible {
   border: 0;
   border-top: 1px solid var(--line);
   background: none;
-  color: #626159;
+  color: #4a4036;
   text-align: left;
   font-size: 11px;
 }
@@ -621,7 +623,7 @@ select:focus-visible {
   padding: 5px 0;
   border: 0;
   background: none;
-  color: #77766e;
+  color: #6b5f52;
   font-size: 11px;
 }
 .subpage > .eyebrow {
@@ -643,18 +645,18 @@ select:focus-visible {
   display: grid;
   place-items: center;
   margin-bottom: 12px;
-  color: #37372f;
+  color: #211c17;
 }
 .empty-state h3 {
   margin: 0 0 7px;
   font:
-    700 15px "Manrope",
+    700 15px "Playfair Display", Georgia, serif,
     sans-serif;
 }
 .empty-state p {
   max-width: 240px;
   margin: 0 0 20px;
-  color: #85837b;
+  color: #6b5f52;
   font-size: 10px;
   line-height: 1.6;
 }
@@ -663,7 +665,7 @@ select:focus-visible {
   padding: 11px 20px;
   border: 0;
   border-radius: 24px;
-  background: #242420;
+  background: #211c17;
   color: #fff;
   font-size: 10px;
 }
@@ -680,7 +682,7 @@ select:focus-visible {
   border-bottom: 1px solid var(--line);
   background: none;
   text-align: left;
-  color: #56564f;
+  color: #4a4036;
 }
 .settings-row > span {
   flex: 1;
@@ -693,11 +695,11 @@ select:focus-visible {
   font-weight: 600;
 }
 .settings-row small {
-  color: #929087;
+  color: #6b5f52;
   font-size: 9px;
 }
 .settings-row > svg:last-child {
-  color: #99978f;
+  color: #6b5f52;
 }
 .logout-btn {
   width: 100%;
@@ -709,8 +711,8 @@ select:focus-visible {
   padding: 12px;
   border: 0;
   border-radius: 24px;
-  background: #e9e7e1;
-  color: #55544d;
+  background: #f3ecdd;
+  color: #4a4036;
   font-size: 10px;
 }
 .article-view {
@@ -732,7 +734,7 @@ select:focus-visible {
 .article-body h1 {
   margin: 13px 0 16px;
   font:
-    750 clamp(25px, 5vw, 36px)/1.18 "Manrope",
+    750 clamp(25px, 5vw, 36px)/1.18 "Playfair Display", Georgia, serif,
     sans-serif;
   letter-spacing: -1.2px;
 }
@@ -749,7 +751,7 @@ select:focus-visible {
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #e6e3da;
+  background: #e8dec9;
   font-size: 9px;
   font-weight: 700;
 }
@@ -762,14 +764,14 @@ select:focus-visible {
   font-size: 10px;
 }
 .byline small {
-  color: #99978f;
+  color: #6b5f52;
   font-size: 9px;
 }
 .article-copy {
   padding: 13px 0;
 }
 .article-copy p {
-  color: #4c4b44;
+  color: #4a4036;
   font-size: 14px;
   line-height: 1.9;
 }
@@ -787,12 +789,12 @@ select:focus-visible {
   border: 1px solid var(--line);
   border-radius: 22px;
   background: transparent;
-  color: #77766e;
+  color: #6b5f52;
   font-size: 10px;
 }
 .article-actions button.active {
-  border-color: #b5b19f;
-  color: #292921;
+  border-color: #6b5f52;
+  color: #211c17;
 }
 .modal-backdrop {
   position: fixed;
@@ -822,7 +824,7 @@ select:focus-visible {
 .modal-head h2 {
   margin: 7px 0 0;
   font:
-    700 22px "Manrope",
+    700 22px "Playfair Display", Georgia, serif,
     sans-serif;
   letter-spacing: -0.7px;
 }
@@ -838,7 +840,7 @@ select:focus-visible {
 .composer-modal label {
   display: block;
   margin: 13px 0 6px;
-  color: #77766e;
+  color: #6b5f52;
   font-size: 10px;
   font-weight: 600;
 }
@@ -849,7 +851,7 @@ select:focus-visible {
   padding: 12px;
   border: 1px solid var(--line);
   border-radius: 9px;
-  background: #fbfaf7;
+  background: #f8f2e6;
   color: var(--ink);
   font-size: 11px;
 }
@@ -867,14 +869,14 @@ select:focus-visible {
   padding: 13px;
   border: 0;
   border-radius: 24px;
-  background: #242420;
+  background: #211c17;
   color: white;
   font-size: 11px;
 }
 .session-note {
   display: block;
   margin-top: 10px;
-  color: #99978f;
+  color: #6b5f52;
   text-align: center;
   font-size: 9px;
 }
@@ -914,7 +916,7 @@ select:focus-visible {
     position: static;
     height: 76px;
     border-top: 1px solid var(--line);
-    background: #f8f7f4;
+    background: #f8f2e6;
   }
   .floating-write {
     display: grid;
@@ -977,8 +979,8 @@ select:focus-visible {
   max-width: min(92vw, 420px);
   padding: 12px 18px;
   border-radius: 14px;
-  background: #242420;
-  color: #f6f5f2;
+  background: #211c17;
+  color: #f8f2e6;
   font-size: 14px;
   line-height: 1.35;
   text-align: center;
@@ -995,9 +997,9 @@ select:focus-visible {
   align-items: center;
   gap: 10px;
   padding: 13px 14px;
-  border: 1px dashed var(--line, #d8d8d8);
+  border: 1px dashed var(--line, #e8dec9);
   border-radius: 12px;
-  color: var(--muted, #777);
+  color: var(--muted, #6b5f52);
   font-size: 13px;
   cursor: pointer;
 }
@@ -1015,4 +1017,172 @@ select:focus-visible {
   object-fit: cover;
   border-radius: 12px;
   margin-top: -4px;
+}
+
+/* ---- Fikrnoma brendbook: urg‘u rangi va yangi bloklar ---- */
+.wordmark span,
+.eyebrow {
+  color: var(--accent);
+}
+.bottom-nav button.active {
+  color: var(--accent);
+}
+.daily-card {
+  margin: 4px 0 22px;
+  padding: 20px;
+  border-radius: 22px;
+  background: var(--ink);
+  color: var(--paper);
+}
+.daily-card small {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: #b9ad9a;
+}
+.daily-card h2 {
+  margin: 6px 0 0;
+  font: 700 24px/1.2 "Playfair Display", Georgia, serif;
+}
+.daily-bars {
+  display: flex;
+  gap: 6px;
+  margin-top: 14px;
+}
+.daily-bars i {
+  flex: 1;
+  height: 6px;
+  border-radius: 9px;
+  background: #4a4036;
+}
+.daily-bars i.on {
+  background: #e39a70;
+}
+.daily-note {
+  margin: 14px 0 0;
+  font-size: 14px;
+  color: #d9cdb5;
+}
+.daily-btn {
+  min-height: 46px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 14px;
+  background: #e39a70;
+  color: #211c17;
+  font-weight: 700;
+}
+.daily-card > .daily-btn {
+  width: 100%;
+  margin-top: 16px;
+}
+.daily-btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(20, 15, 10, 0.55);
+}
+.sheet {
+  width: 100%;
+  max-width: 560px;
+  padding: 22px 20px calc(22px + env(safe-area-inset-bottom, 0px));
+  border-radius: 24px 24px 0 0;
+  background: var(--paper);
+  color: var(--ink);
+}
+.daily-card .sheet small {
+  letter-spacing: 0;
+  color: var(--muted);
+}
+.sheet h3 {
+  margin: 6px 0 0;
+  font: 700 24px/1.25 "Playfair Display", Georgia, serif;
+}
+.sheet textarea {
+  width: 100%;
+  min-height: 120px;
+  margin: 14px 0 6px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--soft);
+  color: var(--ink);
+  font-size: 16px;
+  resize: none;
+}
+.sheet-hint {
+  margin: 0 0 14px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.sheet-actions {
+  display: flex;
+  gap: 10px;
+}
+.sheet-actions .daily-btn {
+  flex: 1;
+  background: var(--accent);
+  color: #f3ecdd;
+}
+.sheet-cancel {
+  min-height: 46px;
+  padding: 0 16px;
+  border: 0;
+  background: none;
+  color: var(--muted);
+}
+.level-card {
+  margin: 16px 0;
+  padding: 18px;
+  border-radius: 20px;
+  background: var(--sage);
+  color: #f3ecdd;
+}
+.level-card small {
+  font-size: 13px;
+}
+.level-card h2 {
+  margin: 4px 0 0;
+  font: 700 28px/1.2 "Playfair Display", Georgia, serif;
+}
+.level-card span {
+  display: block;
+  margin-top: 8px;
+  font-size: 13px;
+}
+.level-bar {
+  height: 6px;
+  margin-top: 14px;
+  border-radius: 9px;
+  background: rgba(0, 0, 0, 0.3);
+}
+.level-bar i {
+  display: block;
+  height: 6px;
+  border-radius: 9px;
+  background: #f3ecdd;
+}
+.answer-list {
+  display: grid;
+  gap: 10px;
+}
+.answer-item {
+  padding: 16px;
+  border-radius: 18px;
+  background: var(--soft);
+}
+.answer-item small {
+  font-size: 12px;
+  color: var(--muted);
+}
+.answer-item p {
+  margin: 8px 0 0;
+  font: 500 17px/1.4 "Playfair Display", Georgia, serif;
 }

@@ -19,12 +19,12 @@ const settings = z
 
 const settingsOf = (u: UserRow) => ({ language: u.language, theme: u.theme, notifications: !!u.notifications });
 
-export function meRoutes(app: FastifyInstance, { db }: Ctx) {
+export function meRoutes(app: FastifyInstance, { db, config }: Ctx) {
   const { requireAuth } = makeAuth(db);
   const pre = { preHandler: requireAuth };
   const count = (sql: string, ...args: unknown[]) => (db.prepare(sql).get(...args) as { n: number }).n;
 
-  app.get("/api/me", pre, async (req) => ({ ...publicUser(req.me!), role: req.me!.role, settings: settingsOf(req.me!) }));
+  app.get("/api/me", pre, async (req) => ({ ...publicUser(req.me!), role: req.me!.role, canWrite: config.openWriting || req.me!.role === "admin", settings: settingsOf(req.me!) }));
 
   app.patch("/api/me", pre, async (req) => {
     const b = settings.parse(req.body);
@@ -48,6 +48,7 @@ export function meRoutes(app: FastifyInstance, { db }: Ctx) {
       saved: count("SELECT COUNT(*) AS n FROM saves WHERE user_id = ?", id),
       followers: count("SELECT COUNT(*) AS n FROM follows WHERE following_id = ?", id),
       following: count("SELECT COUNT(*) AS n FROM follows WHERE follower_id = ?", id),
+      answers: count("SELECT COUNT(*) AS n FROM daily_answers WHERE user_id = ?", id),
       readsThisMonth: count("SELECT COUNT(*) AS n FROM reads WHERE user_id = ? AND read_at >= strftime('%Y-%m-01T00:00:00.000Z','now')", id),
     };
   });
